@@ -9,7 +9,7 @@ namespace CheckersGame
 {
     class Board
     {
-        public string[] tiles = {"0","    ","A1 X","    ","A2 X","    ","A3 X","    ","A4 X",
+        public string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
                                       "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
@@ -23,7 +23,12 @@ namespace CheckersGame
         // choice is the chosen markers current location
         // destination is where it is to go
         string input;
+
         string destination;
+
+        char[] startcoord;
+
+        char[] endcoord;
         
 
 #region Constructor
@@ -40,6 +45,8 @@ namespace CheckersGame
 
                 Console.WriteLine("Welcome to Draughts!\n");
 
+                Console.WriteLine("Select Marker by Row then column");
+
                 createBoard();
 
                 // takes user input and sets it to upper
@@ -47,6 +54,8 @@ namespace CheckersGame
                 Console.WriteLine("Select a Marker to move\n");
                 input = Console.ReadLine();
                 string choice = input.ToUpper();
+
+                startcoord = choice.ToCharArray();
 
 
                 // checks array for chosen marker coord
@@ -60,21 +69,35 @@ namespace CheckersGame
                         input = Console.ReadLine();
                         destination = input.ToUpper();
 
+                        endcoord = destination.ToCharArray();
+
                         for(int x = 0; x < tiles.Length; x++)
                         {
                             if(tiles[x].Contains(destination))
                             {
-                                string newdest = destination + " " + "X";
-                                tiles[x] = newdest;
+                                if (endcoord[0] == startcoord[0])
+                                {
+                                    Console.WriteLine("That move is not possible");
+                                    Console.WriteLine("The counters can only move forward Diagonally");
+                                    Console.ReadLine();
+                                    break;
+                                }
+                                else
+                                {
+                                    string newdest = destination + " " + "X";
+                                    tiles[x] = newdest;
 
-                                tiles[i] = choice + "  ";
+                                    tiles[i] = choice + "  ";
 
-                                Console.WriteLine("Marker moved");
-                                break;
+                                    Console.WriteLine("Marker moved");
+                                    break;
+                                }
+                                
                             }
                             if(x == tiles.Length - 1)
                             {
                                 Console.WriteLine("Marker destination does not exist");
+                                Console.ReadLine();
                             }
                         }
                         break;
