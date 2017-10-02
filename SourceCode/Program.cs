@@ -12,7 +12,7 @@ namespace CheckersGame
         {
             Board board = new Board();
 
-            board.CreateBoard();
+            board.begin();
 
 
             // Prevents screen closing
