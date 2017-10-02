@@ -9,6 +9,7 @@ namespace CheckersGame
 {
     class Board
     {
+#region variables
         public string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
@@ -20,22 +21,40 @@ namespace CheckersGame
         int count = 2;
 
         // variables for player interation
+        // input is based on readline()
         // choice is the chosen markers current location
         // destination is where it is to go
+        // after input has been sent to changed to upperCase
         string input;
-
+        string choice;
         string destination;
 
+        // converts above string inputs into char array
+        // for checking where movement position is going to be
         char[] startcoord;
-
         char[] endcoord;
-        
 
-#region Constructor
+        // char array used to compare the above char arrays
+        // so as to prevent backwards movements
+        // and possibly make sure only diagonal movement forward
+        char[] letter = { 'A', 'B', 'C', 'D', 'E','F', 'G','H'};
+
+
+        // int variables to compare positions of char[]'s above
+        // based on position of letter in char[] letter
+        // used to prevent backwards movements
+        // possibly restrict forward movement to diagonal
+        int posC;
+        int posD;
+#endregion
+
+
+        #region Constructor
         // Constructor just to create board
         // At the moment
         public Board()
         { }
+#endregion
 
         public void begin()
         {
@@ -49,11 +68,11 @@ namespace CheckersGame
 
                 createBoard();
 
-                // takes user input and sets it to upper
+                // takes user input and sets it to upperCase
                 // in case user wrote in lower case
                 Console.WriteLine("Select a Marker to move\n");
                 input = Console.ReadLine();
-                string choice = input.ToUpper();
+                choice = input.ToUpper();
 
                 startcoord = choice.ToCharArray();
 
@@ -61,6 +80,7 @@ namespace CheckersGame
                 // checks array for chosen marker coord
                 for (int i = 0; i < tiles.Length; i++)
                 {
+                    
                     if(tiles[i].Contains(choice))
                     {
                         Console.WriteLine("Marker exists");
@@ -71,29 +91,54 @@ namespace CheckersGame
 
                         endcoord = destination.ToCharArray();
 
+                        // checks if destination coords are present in array tiles[]
                         for(int x = 0; x < tiles.Length; x++)
                         {
                             if(tiles[x].Contains(destination))
                             {
+                                // prevents sideways movement
+                                // by checking if the respective char array values are the same.
+                                // movement not possible
+                                // else it then checks the potential move is not backwards
+                                // else "moves" marker to destination
+                                // starting position replace with choice var + a space. Just to keep board uniform
+                                // #OCD
                                 if (endcoord[0] == startcoord[0])
                                 {
-                                    Console.WriteLine("That move is not possible");
+                                    Console.WriteLine("That move is not possible\n");
+                                    Console.Write("Markers cannot move Sideways\n");
                                     Console.WriteLine("The counters can only move forward Diagonally");
                                     Console.ReadLine();
                                     break;
                                 }
                                 else
                                 {
-                                    string newdest = destination + " " + "X";
-                                    tiles[x] = newdest;
+                                    bool back = checkBackMove(startcoord, endcoord);
 
-                                    tiles[i] = choice + "  ";
+                                    if(back == true)
+                                    {
+                                        string newdest = destination + " " + "X";
+                                        tiles[x] = newdest;
 
-                                    Console.WriteLine("Marker moved");
-                                    break;
+                                        tiles[i] = choice + "  ";
+
+                                        Console.WriteLine("Marker moved");
+                                        break;
+
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("That move is not possible\n");
+                                        Console.Write("Markers cannot move Backwards\n");
+                                        Console.WriteLine("The counters can only move forward Diagonally");
+                                        Console.ReadLine();
+                                        break;
+                                    }
+                                    
                                 }
                                 
                             }
+                            // flags up error if the type coord is not in array
                             if(x == tiles.Length - 1)
                             {
                                 Console.WriteLine("Marker destination does not exist");
@@ -103,7 +148,8 @@ namespace CheckersGame
                         break;
 
                     }
-                    if(i == tiles.Length - 1)
+                    // flags up error if the type coord is not in array
+                    if (i == tiles.Length - 1)
                     {
                         Console.WriteLine("No marker on selected position");
                         Console.ReadLine();
@@ -116,10 +162,9 @@ namespace CheckersGame
             while (count == 2);
             
         }
-#endregion
         public void createBoard()
         {
-            // Creates Board#
+            // Creates Board
             // Inserts array (insert name here when complete) elements into each position a checker marker
             // starts/can move too
             // 8 * 8 Grid
@@ -138,5 +183,43 @@ namespace CheckersGame
             Console.WriteLine("G [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[49], tiles[50], tiles[51], tiles[52], tiles[53], tiles[54], tiles[55], tiles[56]);
             Console.WriteLine("H [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[57], tiles[58], tiles[59], tiles[60], tiles[61], tiles[62], tiles[63], tiles[64]);
         }
+
+#region backwards move check
+        // prevents backwards movement
+        // checks element position of char[] choice  with same position of char[] letter 
+        // when they match, int posC stores this value
+        // same with char[] destination
+        // stores same element in int posD
+        // if posD is less that posC. This means the destination coord is going backwards
+        // bool back is false
+        // else coord is going forward. bool back is true
+        public bool checkBackMove(char[] choice, char[] destination)
+        {
+            bool back = false;
+
+            for(int y = 0; y < letter.Length; y++)
+            {
+                if(choice[0] == letter[y])
+                {
+                    posC = y;
+                }
+                if(destination[0] == letter[y])
+                {
+                    posD = y;
+                }
+                if(posD < posC)
+                {
+                    back = false;
+                }
+                else
+                {
+                    back = true;
+                }
+            }
+
+            return back;
+        }
+#endregion
+
     }
 }
