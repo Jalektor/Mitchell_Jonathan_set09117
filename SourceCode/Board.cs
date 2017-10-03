@@ -54,8 +54,8 @@ namespace CheckersGame
         // At the moment
         public Board()
         { }
-#endregion
-
+        #endregion
+#region startsTheGame
         public void begin()
         {
             do
@@ -76,7 +76,7 @@ namespace CheckersGame
 
                 startcoord = choice.ToCharArray();
 
-
+#region playerOneMove
                 // checks array for chosen marker coord
                 for (int i = 0; i < tiles.Length; i++)
                 {
@@ -99,14 +99,15 @@ namespace CheckersGame
                                 // prevents sideways movement
                                 // by checking if the respective char array values are the same.
                                 // movement not possible
-                                // else it then checks the potential move is not backwards
-                                // else "moves" marker to destination
+                                // then checks the potential move is not backwards
+                                // then checks if forward movement is diagonal only
+                                // then "moves" marker to destination
                                 // starting position replace with choice var + a space. Just to keep board uniform
                                 // #OCD
                                 if (endcoord[0] == startcoord[0])
                                 {
-                                    Console.WriteLine("That move is not possible\n");
-                                    Console.Write("Markers cannot move Sideways\n");
+                                    Console.WriteLine("That move is not possible");
+                                    Console.Write("Markers cannot move Sideways");
                                     Console.WriteLine("The counters can only move forward Diagonally");
                                     Console.ReadLine();
                                     break;
@@ -117,13 +118,26 @@ namespace CheckersGame
 
                                     if(back == true)
                                     {
-                                        string newdest = destination + " " + "X";
-                                        tiles[x] = newdest;
+                                        bool fwd = forwardMove(startcoord, endcoord);
 
-                                        tiles[i] = choice + "  ";
+                                        if(fwd == true)
+                                        {
+                                            string newdest = destination + " " + "X";
+                                            tiles[x] = newdest;
 
-                                        Console.WriteLine("Marker moved");
-                                        break;
+                                            tiles[i] = choice + "  ";
+
+                                            Console.WriteLine("Marker moved");
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("That move is not possible\n");
+                                            Console.WriteLine("The counters can only move forward Diagonally");
+                                            Console.ReadLine();
+                                            break;
+                                        }
+                                        
 
                                     }
                                     else
@@ -160,8 +174,11 @@ namespace CheckersGame
 
             }
             while (count == 2);
-            
+ #endregion           
         }
+#endregion
+
+        #region createsBoard
         public void createBoard()
         {
             // Creates Board
@@ -172,8 +189,9 @@ namespace CheckersGame
             // letters for columns & numbers for Rows
             // This may change with time
             // first Element set as 0, just to fill it up, but board array element starts at tiles[1]
+            // NOTE: first console.writeline spacing here irregular but sets up nicely when executing app # OCD
 
-            Console.WriteLine("    1      2      3      4      5      6      7      8");
+            Console.WriteLine("      1       2        3        4        5        6        7        8");
             Console.WriteLine("A [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[1], tiles[2], tiles[3], tiles[4], tiles[5], tiles[6], tiles[7], tiles[8]);
             Console.WriteLine("B [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[9], tiles[10], tiles[11], tiles[12], tiles[13], tiles[14], tiles[15], tiles[16]);
             Console.WriteLine("C [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[17], tiles[18], tiles[19], tiles[20], tiles[21], tiles[22], tiles[23], tiles[24]);
@@ -183,8 +201,9 @@ namespace CheckersGame
             Console.WriteLine("G [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[49], tiles[50], tiles[51], tiles[52], tiles[53], tiles[54], tiles[55], tiles[56]);
             Console.WriteLine("H [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[57], tiles[58], tiles[59], tiles[60], tiles[61], tiles[62], tiles[63], tiles[64]);
         }
+#endregion
 
-#region backwards move check
+        #region backwards move check
         // prevents backwards movement
         // checks element position of char[] choice  with same position of char[] letter 
         // when they match, int posC stores this value
@@ -218,6 +237,50 @@ namespace CheckersGame
             }
 
             return back;
+        }
+        #endregion
+
+#region forwardMoveCheck1
+        public bool forwardMove(char[] choice, char[] destination)
+        {
+            bool fwd = false;
+            bool diag = false;
+
+            for(int i = 0; i < letter.Length; i++)
+            {
+                if(choice[0] == letter[i])
+                {
+                    posC = i;
+                }
+                if(destination[0] == letter[i])
+                {
+                    posD = i;
+                }
+                if(posD == posC + 1)
+                {
+                    diag = fwdDiagCheck(choice, destination);
+                    break;
+                }
+            }
+            if(diag == true)
+            {
+                fwd = true;
+            }
+
+            return fwd;
+        }
+        #endregion
+#region forwardMoveCheck2
+
+        public bool fwdDiagCheck(char[] choice, char[] destination)
+        {
+            bool diagCheck = false;
+
+            if(destination[1] == choice[1] -1 || destination[1] == choice[1] + 1)
+            {
+                diagCheck = true;
+            }
+            return diagCheck;
         }
 #endregion
 
