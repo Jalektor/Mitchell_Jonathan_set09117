@@ -13,11 +13,11 @@ namespace CheckersGame
         public string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
-                                      "D1 0","    ","D3 0","    ","D5  ","    ","D7  ","    ",
+                                      "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
                                       "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
-                                      "F1  ","    ","F3  ","    ","F5  ","    ","F7  ","    ",
-                                      "    ","G2  ","    ","G4  ","    ","G6  ","    ","G8  ",
-                                      "H1  ","    ","H3  ","    ","H5  ","    ","H7  ","    ",};
+                                      "F1 0","    ","F3 0","    ","F5 0","    ","F7 0","    ",
+                                      "    ","G2 0","    ","G4 0","    ","G6 0","    ","G8 0",
+                                      "H1 0","    ","H3 0","    ","H5 0","    ","H7 0","    ",};
 
         // Keeps do while loop going ATm. Will change later
         int count = 2;
@@ -150,7 +150,6 @@ namespace CheckersGame
 
                                                 newDest = checkEnemyMoveToCapture();
 
-                                                Console.WriteLine(newDest);
 
                                                 // checks where in array postion newDest is
                                                 // ***BUG*** Some reason if statement won't work. Else setion does though
@@ -162,12 +161,14 @@ namespace CheckersGame
                                                 {
                                                     if (d == tiles.Length - 1)
                                                     {
+                                                        // debug purposes ONLY
                                                         Console.WriteLine(newDest);
-                                                        Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nMove aborted");
+                                                        Console.ReadLine();
+                                                        Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
                                                         Console.ReadLine();
                                                         begin();
                                                     }
-                                                    if(tiles[d].Contains(newDest))
+                                                    if(tiles[d].Contains(newDest) && newDest.Contains("  "))
                                                     {
                                                         // enemy marker location changes to destination name with "0" replaced with "  "
                                                         tiles[x] = destination + "  ";
@@ -352,10 +353,10 @@ namespace CheckersGame
         #endregion
 
         #region capture enemy marker
-        // when the letter of end coord is the same as positon of letter[i] - 1
+        // when the letter of end coord is the same as positon of letter[i] -/+ 1
         // stores letter[i] in variable
-        // when the number coord is the same as number[i] + 1
-        // stores numer[i] in variabkes
+        // when the number coord is the same as number[i] +/- 1
+        // stores numer[i] in variables
         // string returns combined tostring of above variables
         string checkEnemyMoveToCapture()
         {
@@ -366,6 +367,7 @@ namespace CheckersGame
             char coordL;
             char coordn;
 
+            // checks if enemy marker is left diagonal fwd to start coord
             if (endcoord[1] < startcoord[1])
             {
                 for (int i = 0; i < letter.Length; i++)
@@ -382,7 +384,27 @@ namespace CheckersGame
                         
                     }
 
-                    newDest = "E2"/*newL + newN.Trim().ToUpper()*/;
+                    newDest = newL + newN.Trim().ToUpper();
+                }
+            }
+            // checks if enemy is right diagonal fwd to start coord
+            else if(endcoord[1] > startcoord[1])
+            {
+                for (int i = 0; i < letter.Length; i++)
+                {
+                    if (endcoord[0] == letter[i] - 1)
+                    {
+                        coordL = letter[i];
+                        newL = coordL.ToString();
+                    }
+                    if (destination[1] + 1 == number[i])
+                    {
+                        coordn = number[i];
+                        newN = coordn.ToString();
+
+                    }
+
+                    newDest = newL + newN.Trim().ToUpper();
                 }
             }
             else
