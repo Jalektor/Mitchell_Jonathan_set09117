@@ -13,7 +13,7 @@ namespace CheckersGame
         public string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
-                                      "D1  ","    ","D3 0","    ","D5  ","    ","D7  ","    ",
+                                      "D1 0","    ","D3 0","    ","D5  ","    ","D7  ","    ",
                                       "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
                                       "F1  ","    ","F3  ","    ","F5  ","    ","F7  ","    ",
                                       "    ","G2  ","    ","G4  ","    ","G6  ","    ","G8  ",
@@ -29,7 +29,7 @@ namespace CheckersGame
         string input;
         string choice;
         string destination;
-        string newDest;
+        string newDest = " ";
 
         // converts above string inputs into char array
         // for checking where movement position is going to be
@@ -146,10 +146,21 @@ namespace CheckersGame
                                                 Console.WriteLine(newDest);
 
                                                 // checks where in array postion newDest is
-                                                // ***BUG*** Some reason if statement won't work. Else does though
+                                                // ***BUG*** Some reason if statement won't work. Else setion does though
+                                                // fixed. Just had to change if/else statement to IF's statment
+                                                // as new dest is greater than tiles[0] was returning failed move.
+                                                // now only checks if d is at tiles.length - 1
+                                                // And if array[d] contains contents of var newDest
                                                 for (int d = 0; d < tiles.Length; d++)
                                                 {
-                                                    if (tiles[d].Contains(newDest))
+                                                    if (d == tiles.Length - 1)
+                                                    {
+                                                        Console.WriteLine(newDest);
+                                                        Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nMove aborted");
+                                                        Console.ReadLine();
+                                                        begin();
+                                                    }
+                                                    if(tiles[d].Contains(newDest))
                                                     {
                                                         // enemy marker location changes to destination name with "0" replaced with "  "
                                                         tiles[x] = destination + "  ";
@@ -163,15 +174,8 @@ namespace CheckersGame
                                                         Console.WriteLine("Marker moved");
                                                         Console.ReadLine();
                                                         begin();
+                                                        break;
                                                     }
-                                                    else /*if(d == tiles.Length - 1)*/
-                                                    {
-                                                        Console.WriteLine(newDest);
-                                                        Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nMove aborted");
-                                                        Console.ReadLine();
-                                                        begin();
-                                                    }
-                                                    Console.ReadLine();
                                                 }
                                             }
                                             else
@@ -374,7 +378,7 @@ namespace CheckersGame
                         
                     }
 
-                    newDest = newL + newN.ToUpper();
+                    newDest = "E2"/*newL + newN.Trim().ToUpper()*/;
                 }
             }
             else
