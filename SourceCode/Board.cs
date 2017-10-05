@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace CheckersGame
 {
-    class Board
+    public class Board
     {
         #region variables
         public string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
@@ -18,6 +18,8 @@ namespace CheckersGame
                                       "F1  ","    ","F3  ","    ","F5  ","    ","F7  ","    ",
                                       "    ","G2  ","    ","G4  ","    ","G6  ","    ","G8  ",
                                       "H1  ","    ","H3  ","    ","H5  ","    ","H7  ","    ",};
+
+        // Keeps do while loop going ATm. Will change later
         int count = 2;
 
         // variables for player interation
@@ -44,7 +46,7 @@ namespace CheckersGame
         // Char array to check position of number new player marker destination
         // AFTER they attempt to take an enemy marker
         // And Then used with above char array to create a new tile destination for player marker
-        char[] number = { '1', '2', '3', '4', '5', '6', '7', '8', };
+        char[] number = { '1', '2', '3', '4', '5', '6', '7', '8' };
 
 
         // int variables to compare positions of char[]'s above
@@ -53,6 +55,11 @@ namespace CheckersGame
         // possibly restrict forward movement to diagonal
         int posC;
         int posD;
+
+        // takes count of markers left for each player
+        // IF either are zero, ends loop
+        int playerAMarkerCount = 8;
+        int playerBMarkerCount = 8;
         #endregion
 
 
@@ -223,7 +230,6 @@ namespace CheckersGame
                             }
                         }
                         break;
-
                     }
                     // flags up error if the type coord is not in array
                     if (i == tiles.Length - 1)
@@ -232,11 +238,9 @@ namespace CheckersGame
                         Console.ReadLine();
                         break;
                     }
-
                 }
-
             }
-            while (count == 2);
+            while (/*count == 2*/ playerAMarkerCount != 0 || playerBMarkerCount != 0);
             #endregion
         }
         #endregion
