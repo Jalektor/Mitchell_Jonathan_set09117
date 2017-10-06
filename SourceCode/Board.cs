@@ -16,10 +16,10 @@ namespace CheckersGame
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
                                       "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
-                                      "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
-                                      "F1 0","    ","F3 0","    ","F5 0","    ","F7 0","    ",
-                                      "    ","G2 0","    ","G4 0","    ","G6 0","    ","G8 0",
-                                      "H1 0","    ","H3 0","    ","H5 0","    ","H7 0","    ",};
+                                      "    ","E2 X","    ","E4 X","    ","E6  ","    ","E8  ",
+                                      "F1 O","    ","F3 O","    ","F5 O","    ","F7 O","    ",
+                                      "    ","G2 O","    ","G4 O","    ","G6 O","    ","G8 O",
+                                      "H1 O","    ","H3 O","    ","H5 O","    ","H7 O","    ",};
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
         // Keeps do while loop going ATm. Will change later
@@ -117,7 +117,7 @@ namespace CheckersGame
 
                 startcoord = choice.ToCharArray();
 
-                player1.move();
+                player2.move();
 
             } while (playerAMarkerCount != 0 || playerBMarkerCount != 0);
         }

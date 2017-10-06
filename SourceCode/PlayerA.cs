@@ -25,7 +25,7 @@ namespace CheckersGame
             // checks array for chosen marker coord
             for (int i = 0; i < board.Tiles.Length; i++)
             {
-                if (board.Tiles[i].Contains(board.Choice))
+                if (board.Tiles[i].Contains(board.Choice) && board.Tiles[i].Contains("X"))
                 {
                     Console.WriteLine("Marker exists");
 
@@ -69,7 +69,6 @@ namespace CheckersGame
                                 if (back == true)
                                 {
                                     bool fwd = forwardMove(board.Startcoord, board.Endcoord);
-
                                     #region forwardMove
                                     // only allows forward diagonal movement
                                     if (fwd == true)
@@ -81,7 +80,7 @@ namespace CheckersGame
                                         // if yes, marker moved to tiles diagonal from enemy marker, and capturing it
                                         // else capture aborted
                                        
-                                        if (board.Tiles[x].Contains("0"))
+                                        if (board.Tiles[x].Contains("O"))
                                         {
                                             Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
 
@@ -95,16 +94,8 @@ namespace CheckersGame
                                             // And if array[d] contains contents of var newDest
                                             for (int d = 0; d < board.Tiles.Length; d++)
                                             {
-                                                if (d == board.Tiles.Length - 1)
-                                                {
-                                                    // debug purposes ONLY
-                                                    Console.WriteLine(board.NewDest);
-                                                    Console.ReadLine();
-                                                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
-                                                    Console.ReadLine();
-                                                    board.begin();
-                                                }
-                                                if (board.Tiles[d].Contains(board.NewDest) && board.NewDest.Contains("  "))
+                                                
+                                                if (board.Tiles[d].Contains(board.NewDest) && !board.NewDest.Contains("X") && !board.NewDest.Contains("O"))
                                                 {
                                                     // enemy marker location changes to destination name with "0" replaced with "  "
                                                     board.Tiles[x] = board.Destination + "  ";
@@ -119,6 +110,15 @@ namespace CheckersGame
                                                     Console.ReadLine();
                                                     board.begin();
                                                     break;
+                                                }
+                                                if (d == board.Tiles.Length - 1)
+                                                {
+                                                    // debug purposes ONLY
+                                                    Console.WriteLine(board.NewDest);
+                                                    Console.ReadLine();
+                                                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
+                                                    Console.ReadLine();
+                                                    board.begin();
                                                 }
                                             }
                                         }
@@ -167,6 +167,7 @@ namespace CheckersGame
                         {
                             Console.WriteLine("Marker destination does not exist");
                             Console.ReadLine();
+                            break;
                         }
                     }
                     break;
@@ -175,7 +176,7 @@ namespace CheckersGame
                 // flags up error if the type coord is not in array
                 if (i == board.Tiles.Length - 1)
                 {
-                    Console.WriteLine("No marker on selected position");
+                    Console.WriteLine("No player counter on selected position");
                     Console.ReadLine();
                     break;
                 }
