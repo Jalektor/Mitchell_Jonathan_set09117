@@ -10,14 +10,12 @@ namespace CheckersGame
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Hello World");
+            Console.ReadLine();
+
             Board board = new Board();
 
             board.begin();
-
-
-            // Prevents screen closing
-            // only inserted for beggining of development ONLY
-            Console.ReadLine();
         }
     }
 }

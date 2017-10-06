@@ -10,7 +10,9 @@ namespace CheckersGame
     public class Board
     {
         #region variables
-        public string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
+        // array to create board values
+        // restricted 
+        private string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
                                       "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
@@ -18,9 +20,10 @@ namespace CheckersGame
                                       "F1 0","    ","F3 0","    ","F5 0","    ","F7 0","    ",
                                       "    ","G2 0","    ","G4 0","    ","G6 0","    ","G8 0",
                                       "H1 0","    ","H3 0","    ","H5 0","    ","H7 0","    ",};
+        public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
         // Keeps do while loop going ATm. Will change later
-        int count = 2;
+        protected int count = 2;
 
         // variables for player interation
         // input is based on readline()
@@ -28,25 +31,38 @@ namespace CheckersGame
         // destination is where it is to go
         // after input has been sent to changed to upperCase
         // newDest to store new destination, based on where marker is moving too &/or an enemy marker is being captured
-        string input;
-        string choice;
-        string destination;
-        string newDest = " ";
+        private string input;
+        private string choice;   
+        private string destination;
+        private string newDest;
+
+        public string Input { get { return input; } set { input = value; } }
+        public string Choice { get { return choice; } set { choice = value; } }
+        public string Destination { get { return destination; } set { destination = value; } }
+        public string NewDest { get { return newDest; } set { newDest = value; } }
+
 
         // converts above string inputs into char array
         // for checking where movement position is going to be
-        char[] startcoord;
-        char[] endcoord;
+        private char[] startcoord;
+        private char[] endcoord;
+
+        public char[] Startcoord { get { return startcoord; } set { startcoord = value; } }
+        public char[] Endcoord { get { return endcoord; } set { endcoord = value; } }
 
         // char array used to compare the above char arrays
         // so as to prevent backwards movements
         // and possibly make sure only diagonal movement forward
-        char[] letter = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+        public char[] letter = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+
+        public char[] Letter { get { return letter; } set { letter = value; } }
 
         // Char array to check position of number new player marker destination
         // AFTER they attempt to take an enemy marker
         // And Then used with above char array to create a new tile destination for player marker
-        char[] number = { '1', '2', '3', '4', '5', '6', '7', '8' };
+        protected char[] number = { '1', '2', '3', '4', '5', '6', '7', '8' };
+
+        public char[] Number { get { return number; } set { number = value; } }
 
 
         // int variables to compare positions of char[]'s above
@@ -56,10 +72,18 @@ namespace CheckersGame
         int posC;
         int posD;
 
+        public int PosC { get { return posC; } set { posC = value; } }
+        public int PosD { get { return posD; } set { posD = value; } }
+
+
         // takes count of markers left for each player
         // IF either are zero, ends loop
-        int playerAMarkerCount = 8;
-        int playerBMarkerCount = 8;
+        protected int playerAMarkerCount = 8;
+        protected int playerBMarkerCount = 8;
+
+        // object of classes to call on the functions within them
+        PlayerA player1; 
+        PlayerB player2; 
         #endregion
 
 
@@ -67,7 +91,10 @@ namespace CheckersGame
         // Constructor just to create board
         // At the moment
         public Board()
-        { }
+        {
+            player1 = new PlayerA(this);
+            player2 = new PlayerB(this);
+        }
         #endregion
         #region startsTheGame
         public void begin()
@@ -90,159 +117,9 @@ namespace CheckersGame
 
                 startcoord = choice.ToCharArray();
 
-                #region playerOneMove
-                // checks array for chosen marker coord
-                for (int i = 0; i < tiles.Length; i++)
-                {
-                    if (tiles[i].Contains(choice))
-                    {
-                        Console.WriteLine("Marker exists");
+                player1.move();
 
-                        Console.WriteLine("Where do you want the marker to go?");
-                        input = Console.ReadLine();
-                        destination = input.ToUpper();
-
-                        endcoord = destination.ToCharArray();
-
-                        // checks if destination coords are present in array tiles[]
-                        for (int x = 0; x < tiles.Length; x++)
-                        {
-                            if (tiles[x].Contains(destination))
-                            {
-                                // prevents sideways movement
-                                // by checking if the respective char array values are the same.
-                                // movement not possible
-                                // then checks the potential move is not backwards
-                                // then checks if forward movement is diagonal only
-                                // then "moves" marker to destination
-                                // starting position replace with choice var + a space. Just to keep board uniform
-                                // #OCD
-
-                                // prevents sideways movement
-                                if (endcoord[0] == startcoord[0])
-                                {
-                                    Console.WriteLine("That move is not possible");
-                                    Console.WriteLine("Markers cannot move Sideways");
-                                    Console.WriteLine("The counters can only move forward Diagonally");
-                                    Console.ReadLine();
-                                    break;
-                                }
-                                // prevents backwards movement
-                                else
-                                {
-                                    bool back = checkBackMove(startcoord, endcoord);
-
-                                    if (back == true)
-                                    {
-                                        bool fwd = forwardMove(startcoord, endcoord);
-
-                                        // only allows forward diagonal movement
-                                        if (fwd == true)
-                                        {
-                                            // checks for enemy tile in destination tile
-                                            // if present perform checkEnemyMoveToCapture function
-                                            // returned result determines if move possible
-                                            // if yes, marker moved to tiles diagonal from enemy marker, and capturing it
-                                            // else capture aborted
-                                            if (tiles[x].Contains("0"))
-                                            {
-                                                Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
-
-                                                newDest = checkEnemyMoveToCapture();
-
-
-                                                // checks where in array postion newDest is
-                                                // ***BUG*** Some reason if statement won't work. Else setion does though
-                                                // fixed. Just had to change if/else statement to IF's statment
-                                                // as new dest is greater than tiles[0] was returning failed move.
-                                                // now only checks if d is at tiles.length - 1
-                                                // And if array[d] contains contents of var newDest
-                                                for (int d = 0; d < tiles.Length; d++)
-                                                {
-                                                    if (d == tiles.Length - 1)
-                                                    {
-                                                        // debug purposes ONLY
-                                                        Console.WriteLine(newDest);
-                                                        Console.ReadLine();
-                                                        Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
-                                                        Console.ReadLine();
-                                                        begin();
-                                                    }
-                                                    if(tiles[d].Contains(newDest) && newDest.Contains("  "))
-                                                    {
-                                                        // enemy marker location changes to destination name with "0" replaced with "  "
-                                                        tiles[x] = destination + "  ";
-
-                                                        // new destination of player marker
-                                                        tiles[d] = newDest + " X";
-
-                                                        // original poistion of marker has the "X" replaced with "  "
-                                                        tiles[i] = choice + "  ";
-
-                                                        Console.WriteLine("Marker moved");
-                                                        Console.ReadLine();
-                                                        begin();
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                newDest = destination + " X";
-                                                tiles[x] = newDest;
-
-                                                tiles[i] = choice + "  ";
-
-                                                Console.WriteLine("Marker moved");
-                                                Console.ReadLine();
-                                                begin();
-                                                break;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("That move is not possible\n");
-                                            Console.WriteLine("The counters can only move forward Diagonally");
-                                            Console.ReadLine();
-                                            break;
-                                        }
-
-
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("That move is not possible\n");
-                                        Console.Write("Markers cannot move Backwards\n");
-                                        Console.WriteLine("The counters can only move forward Diagonally");
-                                        Console.ReadLine();
-                                        break;
-                                    }
-
-                                }
-                            
-
-                            }
-                            // flags up error if the type coord is not in array
-                            if (x == tiles.Length - 1)
-                            {
-                                Console.WriteLine("Marker destination does not exist");
-                                Console.ReadLine();
-                            }
-                        }
-                        break;
-                    }
-                    // flags up error if the type coord is not in array
-                    if (i == tiles.Length - 1)
-                    {
-                        Console.WriteLine("No marker on selected position");
-                        Console.ReadLine();
-                        break;
-                    }
-                }
-            }
-            while (/*count == 2*/ playerAMarkerCount != 0 || playerBMarkerCount != 0);
-            #endregion
+            } while (playerAMarkerCount != 0 || playerBMarkerCount != 0);
         }
         #endregion
 
@@ -268,151 +145,6 @@ namespace CheckersGame
             Console.WriteLine("F [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[41], tiles[42], tiles[43], tiles[44], tiles[45], tiles[46], tiles[47], tiles[48]);
             Console.WriteLine("G [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[49], tiles[50], tiles[51], tiles[52], tiles[53], tiles[54], tiles[55], tiles[56]);
             Console.WriteLine("H [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[57], tiles[58], tiles[59], tiles[60], tiles[61], tiles[62], tiles[63], tiles[64]);
-        }
-        #endregion
-
-        #region backwards move check
-        // prevents backwards movement
-        // checks element position of char[] choice  with same position of char[] letter 
-        // when they match, int posC stores this value
-        // same with char[] destination
-        // stores same element in int posD
-        // if posD is less that posC. This means the destination coord is going backwards
-        // bool back is false
-        // else coord is going forward. bool back is true
-        public bool checkBackMove(char[] choice, char[] destination)
-        {
-            bool back = false;
-
-            for (int y = 0; y < letter.Length; y++)
-            {
-                if (choice[0] == letter[y])
-                {
-                    posC = y;
-                }
-                if (destination[0] == letter[y])
-                {
-                    posD = y;
-                }
-                if (posD < posC)
-                {
-                    back = false;
-                }
-                else
-                {
-                    back = true;
-                }
-            }
-
-            return back;
-        }
-        #endregion
-
-        #region forwardMoveCheck1
-        public bool forwardMove(char[] choice, char[] destination)
-        {
-            bool fwd = false;
-            bool diag = false;
-
-            for (int i = 0; i < letter.Length; i++)
-            {
-                if (choice[0] == letter[i])
-                {
-                    posC = i;
-                }
-                if (destination[0] == letter[i])
-                {
-                    posD = i;
-                }
-                if (posD == posC + 1)
-                {
-                    diag = fwdDiagCheck(choice, destination);
-                    break;
-                }
-            }
-            if (diag == true)
-            {
-                fwd = true;
-            }
-
-            return fwd;
-        }
-        #endregion
-        #region forwardMoveCheck2
-
-        public bool fwdDiagCheck(char[] choice, char[] destination)
-        {
-            bool diagCheck = false;
-
-            if (destination[1] == choice[1] - 1 || destination[1] == choice[1] + 1)
-            {
-                diagCheck = true;
-            }
-            return diagCheck;
-        }
-        #endregion
-
-        #region capture enemy marker
-        // when the letter of end coord is the same as positon of letter[i] -/+ 1
-        // stores letter[i] in variable
-        // when the number coord is the same as number[i] +/- 1
-        // stores numer[i] in variables
-        // string returns combined tostring of above variables
-        string checkEnemyMoveToCapture()
-        {
-            // String contents debug stuff
-            string newDest = "broke\nGo";
-            string newL = "break";
-            string newN = "stuff";
-            char coordL;
-            char coordn;
-
-            // checks if enemy marker is left diagonal fwd to start coord
-            if (endcoord[1] < startcoord[1])
-            {
-                for (int i = 0; i < letter.Length; i++)
-                {
-                    if (endcoord[0] == letter[i] - 1)
-                    {
-                        coordL = letter[i];
-                        newL = coordL.ToString();
-                    }
-                    if(destination[1] - 1 == number[i])
-                    {
-                        coordn = number[i];
-                        newN = coordn.ToString();
-                        
-                    }
-
-                    newDest = newL + newN.Trim().ToUpper();
-                }
-            }
-            // checks if enemy is right diagonal fwd to start coord
-            else if(endcoord[1] > startcoord[1])
-            {
-                for (int i = 0; i < letter.Length; i++)
-                {
-                    if (endcoord[0] == letter[i] - 1)
-                    {
-                        coordL = letter[i];
-                        newL = coordL.ToString();
-                    }
-                    if (destination[1] + 1 == number[i])
-                    {
-                        coordn = number[i];
-                        newN = coordn.ToString();
-
-                    }
-
-                    newDest = newL + newN.Trim().ToUpper();
-                }
-            }
-            else
-            {
-                newDest = "";
-            }
-            return newDest; 
-            
         }
         #endregion
     }
