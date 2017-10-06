@@ -1,11 +1,11 @@
 % #######################################
 % ########### FILL THESE IN #############
 % #######################################
-\def\mytitle{Coursework Report template}
-\def\mykeywords{Fill, These, In, So, google, can, find, your, report}
-\def\myauthor{Cool Student}
-\def\contact{4008000@napier.ac.uk}
-\def\mymodule{Module Title (SET00000)}
+\def\mytitle{Algorithms and Data structures Coursework Report}
+\def\mykeywords{Draughts, Algorithms, Data Structures, Console}
+\def\myauthor{Jonathan Mitchell}
+\def\contact{40311730@live.napier.ac.uk}
+\def\mymodule{Module Title (SET09117)}
 % #######################################
 % #### YOU DON'T NEED TO TOUCH BELOW ####
 % #######################################
@@ -85,75 +85,38 @@
     \maketitle
     \begin{abstract}
         %Replace the lipsum command with actual text 
-        hellow.
+        hello.
     \end{abstract}
     
     \textbf{Keywords -- }{\mykeywords}
     
     \section{Introduction}
-    \paragraph{Referencing}
-    You should cite References like this: \cite{Keshav}. The references are saved in an external .bib file, and will automatically be added to the bibliography at the end once cited.
+    \section{Analysis}
+    \paragraph{Create the game Draughts}
+    The objective of this report is to create the game draughts in a chosen language and a chosen format - console/form/WPF or similar. Particular attention is to be placed on the Data Structures and Algorithms used.
     
-    \figuremacro{h}{placeholder}{ImageTitle}{ - Some Descriptive Text}{1.0}
-	
-	\section{Formatting}
-	Some common formatting you may need uses these commands for \textbf{Bold Text}, \textit{Italics}, and \underline{underlined}.
-	\subsection{LineBreaks}
-	Here is a line
+    The game, at the very least, should allow for 2 human players to play against each other. Adding "AI" algorithms to allow for Player vs Computer, or even Computer vs Computer are optional additions. Based on development capabilities within the Project time-scale. Additional features such as undo or redo a move are also beneficial.
     
-    Here is a line followed by a double line break.
-	This line is only one line break down from the above, Notice that latex can ignore this
+    Adding the ability to record the results of games and even record games themselves is another possibility. Finally Creative freedom is encourage during the development. An individual uniqueness is preferred when developing the game of Draughts.
+    \section{Design}
+    \subsection{{Player vs Player}}
+    This began with creating a simple game board. Populated with elements from string array tiles. Allowing the player the ability to select the co-ordinates that will be populated with the draughts counters. This part 
+    \paragraph{Player vs Computer}
+    \paragraph{Computer vs Computer}
+    \section{Development}
+    \subsection{Player vs Player}
+    \subsubsection{Player 1}
+    \subsubsection{Player 2}
+    \subsubsection{Player vs Player}
+    \subsubsection{Undo/Redo}
+    \subsubsection{Computer}
+    This is where shit gets scary
     
-    We can force a break \\ with the break operator.
+    Like Skynet level scary
+    \subsubsection{Player vs Computer}
     
-	\subsection{Maths}
-    Embedding Maths is Latex's bread and butter    
     
-    {\centering \Large \(
-        J = \begin{bmatrix}
-            \frac{\delta e}{\delta \theta _0}
-            \frac{\delta e}{\delta \theta _1}
-            \frac{\delta e}{\delta \theta _2}
-        \end{bmatrix}
-        = e_{current} - e_{target} 
-    \)\par}
-	
-	\subsection{Code Listing}
-    You can load segments of code from a file, or embed them directly.
-    
-\begin{lstlisting}[caption = Hello World! in c++]
-#include <iostream>
-
-int main() {
-    std::cout << "Hello World!" << std::endl;
-    std::cin.get();
-    return 0;
-}
-\end{lstlisting}
-
-\lstinputlisting[caption = Hello World! in python script]{./sourceCode/hello.py}
-    
-\subsection{PseudoCode}
-
-\begin{algorithm}[h]
-\For{$i = 0$ \KwTo $100$}{
- print\_number = true\;
-\If{i is divisible by 3}{
- print "Fizz"\;
- print\_number = false\;
-}
-\If{i is divisible by 5}{
- print "Buzz"\;
- print\_number = false\;
-}
-\If{print\_number}{
-    print i\;
-}
-print a newline\;
-}
-\caption{FizzBuzz}
-\end{algorithm}
-	
+    \section{Testing}
 \section{Conclusion}	
 \bibliographystyle{ieeetr}
 \bibliography{references}
