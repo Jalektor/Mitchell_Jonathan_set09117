@@ -16,13 +16,13 @@ namespace CheckersGame
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
                                       "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
-                                      "    ","E2 X","    ","E4 X","    ","E6  ","    ","E8  ",
+                                      "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
                                       "F1 O","    ","F3 O","    ","F5 O","    ","F7 O","    ",
                                       "    ","G2 O","    ","G4 O","    ","G6 O","    ","G8 O",
                                       "H1 O","    ","H3 O","    ","H5 O","    ","H7 O","    ",};
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
-        // Keeps do while loop going ATm. Will change later
+        // Keeps do while loop going ATM. Will change later
         protected int count = 2;
 
         // variables for player interation
@@ -53,14 +53,14 @@ namespace CheckersGame
         // char array used to compare the above char arrays
         // so as to prevent backwards movements
         // and possibly make sure only diagonal movement forward
-        public char[] letter = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+        private char[] letter = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
 
         public char[] Letter { get { return letter; } set { letter = value; } }
 
         // Char array to check position of number new player marker destination
         // AFTER they attempt to take an enemy marker
         // And Then used with above char array to create a new tile destination for player marker
-        protected char[] number = { '1', '2', '3', '4', '5', '6', '7', '8' };
+        private char[] number = { '1', '2', '3', '4', '5', '6', '7', '8' };
 
         public char[] Number { get { return number; } set { number = value; } }
 
@@ -69,8 +69,8 @@ namespace CheckersGame
         // based on position of letter in char[] letter
         // used to prevent backwards movements
         // possibly restrict forward movement to diagonal
-        int posC;
-        int posD;
+        private int posC;
+        private int posD;
 
         public int PosC { get { return posC; } set { posC = value; } }
         public int PosD { get { return posD; } set { posD = value; } }
@@ -78,12 +78,23 @@ namespace CheckersGame
 
         // takes count of markers left for each player
         // IF either are zero, ends loop
-        protected int playerAMarkerCount = 8;
-        protected int playerBMarkerCount = 8;
+        private int playerAMarkerCount = 2;
+        private int playerBMarkerCount = 1;
+
+        public int PlayerAMarkerCount { get { return playerAMarkerCount; } set { playerAMarkerCount = value; } }
+        public int PlayerBMarkerCount { get { return playerBMarkerCount; } set { playerBMarkerCount = value; } }
+
+        // variable to determine who's turn it is
+        public int player = 1;
+
+        public int Player { get { return player; } set { player = value; } }
 
         // object of classes to call on the functions within them
         PlayerA player1; 
-        PlayerB player2; 
+        PlayerB player2;
+
+        // variable to control 
+        private int gameState = 1;
         #endregion
 
 
@@ -98,7 +109,8 @@ namespace CheckersGame
         #endregion
         #region startsTheGame
         public void begin()
-        {
+        {           
+;
             do
             {
                 Console.Clear();
@@ -107,19 +119,54 @@ namespace CheckersGame
 
                 Console.WriteLine("Select Marker by Row then column");
 
+                Console.WriteLine("Player 1 marker count: " + PlayerAMarkerCount);
+                Console.WriteLine("Player 2 marker count: " + PlayerBMarkerCount + "\n\n");
+
+
                 createBoard();
 
-                // takes user input and sets it to upperCase
-                // in case user wrote in lower case
-                Console.WriteLine("Select a Marker to move\n");
-                input = Console.ReadLine();
-                choice = input.ToUpper();
+                if(player == 1)
+                {
+                    // takes user input and sets it to upperCase
+                    // in case user wrote in lower case
+                    Console.WriteLine("Player 1 select a counter to move\n");
 
-                startcoord = choice.ToCharArray();
+                    input = Console.ReadLine();
+                    choice = input.ToUpper();
 
-                player2.move();
+                    startcoord = choice.ToCharArray();
 
-            } while (playerAMarkerCount != 0 || playerBMarkerCount != 0);
+                    player1.move();
+                }
+                else
+                {
+                    
+                    // takes user input and sets it to upperCase
+                    // in case user wrote in lower case
+                    Console.WriteLine("Player 2 select a counter to move\n");    
+                    input = Console.ReadLine();
+                    choice = input.ToUpper();
+
+                    startcoord = choice.ToCharArray();
+                    player2.move();
+                }
+
+                gameState = checkWin();
+            }
+            while (gameState == 1);
+
+            Console.Clear();
+            createBoard();
+
+            if(PlayerAMarkerCount == 0)
+            {
+                Console.WriteLine("Congratulations Player 2. you have won!\nThanks for playing\nGoodbye");
+            }
+            else if(PlayerBMarkerCount == 0)
+            {
+                Console.WriteLine("Congratulations Player 1. you have won!\nThanks for playing\nGoodbye");
+            }
+            Console.ReadLine();
         }
         #endregion
 
@@ -147,5 +194,18 @@ namespace CheckersGame
             Console.WriteLine("H [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[57], tiles[58], tiles[59], tiles[60], tiles[61], tiles[62], tiles[63], tiles[64]);
         }
         #endregion
+
+        public int checkWin()
+        {
+            if (PlayerAMarkerCount == 0 || PlayerBMarkerCount == 0)
+            {
+                Console.WriteLine("Game Over");
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
     }
 }
