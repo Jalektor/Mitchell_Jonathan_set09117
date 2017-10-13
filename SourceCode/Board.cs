@@ -15,10 +15,10 @@ namespace CheckersGame
         private string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
-                                      "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
+                                      "D1  ","    ","D3 O","    ","D5  ","    ","D7  ","    ",
                                       "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
-                                      "F1 O","    ","F3 O","    ","F5 O","    ","F7 O","    ",
-                                      "    ","G2 O","    ","G4 O","    ","G6 O","    ","G8 O",
+                                      "F1 O","    ","F3 O","    ","F5 ","    ","F7 O","    ",
+                                      "    ","G2 O","    ","G4  ","    ","G6 O","    ","G8 O",
                                       "H1 O","    ","H3 O","    ","H5 O","    ","H7 O","    ",};
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
@@ -35,11 +35,15 @@ namespace CheckersGame
         private string choice;   
         private string destination;
         private string newDest;
+        private string left;
+        private string right;
 
         public string Input { get { return input; } set { input = value; } }
         public string Choice { get { return choice; } set { choice = value; } }
         public string Destination { get { return destination; } set { destination = value; } }
         public string NewDest { get { return newDest; } set { newDest = value; } }
+        public string Left { get { return left; } set { left = value; } }
+        public string Right { get { return right; } set { right = value; } }
 
 
         // converts above string inputs into char array
@@ -78,8 +82,8 @@ namespace CheckersGame
 
         // takes count of markers left for each player
         // IF either are zero, ends loop
-        private int playerAMarkerCount = 2;
-        private int playerBMarkerCount = 1;
+        private int playerAMarkerCount = 12;
+        private int playerBMarkerCount = 12;
 
         public int PlayerAMarkerCount { get { return playerAMarkerCount; } set { playerAMarkerCount = value; } }
         public int PlayerBMarkerCount { get { return playerBMarkerCount; } set { playerBMarkerCount = value; } }
@@ -122,7 +126,6 @@ namespace CheckersGame
                 Console.WriteLine("Player 1 marker count: " + PlayerAMarkerCount);
                 Console.WriteLine("Player 2 marker count: " + PlayerBMarkerCount + "\n\n");
 
-
                 createBoard();
 
                 if(player == 1)
@@ -130,11 +133,28 @@ namespace CheckersGame
                     // takes user input and sets it to upperCase
                     // in case user wrote in lower case
                     Console.WriteLine("Player 1 select a counter to move\n");
-
                     input = Console.ReadLine();
                     choice = input.ToUpper();
+                    if(choice == "")
+                    {
+                        Console.WriteLine("Please enter a marker position");
+                        Console.ReadLine();
+                        begin();
+                    }
 
                     startcoord = choice.ToCharArray();
+                    Console.WriteLine("Marker exists");
+
+                    Console.WriteLine("Where do you want the marker to go?");
+                    Input = Console.ReadLine();
+                    Destination = Input.ToUpper();
+
+                    if (Destination == "")
+                    {
+                        Console.WriteLine("Please enter a position for your marker to move to");
+                        Console.ReadLine();
+                        begin();
+                    }
 
                     player1.move();
                 }
@@ -143,11 +163,29 @@ namespace CheckersGame
                     
                     // takes user input and sets it to upperCase
                     // in case user wrote in lower case
-                    Console.WriteLine("Player 2 select a counter to move\n");    
+                    Console.WriteLine("Player 2 select a counter to move\n");
                     input = Console.ReadLine();
                     choice = input.ToUpper();
+                    if (choice == "")
+                    {
+                        Console.WriteLine("Please enter a marker position");
+                        Console.ReadLine();
+                        begin();
+                    }
 
                     startcoord = choice.ToCharArray();
+                    Console.WriteLine("Marker exists");
+
+                    Console.WriteLine("Where do you want the marker to go?");
+                    Input = Console.ReadLine();
+                    Destination = Input.ToUpper();
+
+                    if (Destination == "")
+                    {
+                        Console.WriteLine("Please enter a position for your marker to move to");
+                        Console.ReadLine();
+                        begin();
+                    }
                     player2.move();
                 }
 

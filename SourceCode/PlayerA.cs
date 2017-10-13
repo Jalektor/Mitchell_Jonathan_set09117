@@ -10,6 +10,17 @@ namespace CheckersGame
 {
     public class PlayerA
     {
+        public int x;
+        public int i;
+        public int d;
+
+        // String contents debug stuff
+        public string newDest = "broke\nGo";
+        public string newL = "break";
+        public string newN = "stuff";
+        public char coordL;
+        public char coordn;
+
         Board board;
 
         #region Constructor
@@ -23,23 +34,15 @@ namespace CheckersGame
         {
             #region playerOneMove
             // checks array for chosen marker coord
-            for (int i = 0; i < board.Tiles.Length; i++)
+            for (i = 0; i < board.Tiles.Length; i++)
             {
                 if (board.Tiles[i].Contains(board.Choice) && board.Tiles[i].Contains("X"))
                 {
-                    Console.WriteLine("Marker exists");
-
-                    Console.WriteLine("Where do you want the marker to go?");
-                    board.Input = Console.ReadLine();
-                    board.Destination = board.Input.ToUpper();
-
-                    board.Endcoord = board.Destination.ToCharArray();
                     #region destinationcoords
                     // checks if destination coords are present in array tiles[]
-                    for (int x = 0; x < board.Tiles.Length; x++)
+                    for (x = 0; x < board.Tiles.Length; x++)
                     {
-
-                        if (board.Tiles[x].Contains(board.Destination) && !board.Tiles[x].Contains("X"))
+                        if (board.Tiles[x].Contains(board.Destination) && !board.Tiles[x].Contains("X") && !board.Destination.Contains("Empty"))
                         {
                             // prevents sideways movement
                             // by checking if the respective char array values are the same.
@@ -51,6 +54,7 @@ namespace CheckersGame
                             // #OCD
 
                             #region SidewaysMoveCheck
+                            board.Endcoord = board.Destination.ToCharArray();
                             // prevents sideways movement
                             if (board.Endcoord[0] == board.Startcoord[0])
                             {
@@ -72,52 +76,67 @@ namespace CheckersGame
                                     #region forwardMove
                                     // only allows forward diagonal movement
                                     if (fwd == true)
-                                    { 
+                                    {
                                         #region enemycapture
-                                        // checks for enemy tile in destination tile
+                                        // checks for enemy marker in destination tile
                                         // if present perform checkEnemyMoveToCapture function
                                         // returned result determines if move possible
                                         // if yes, marker moved to tiles diagonal from enemy marker, and capturing it
                                         // else capture aborted
-                                       
+
                                         if (board.Tiles[x].Contains("O"))
                                         {
-                                            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+                                            captureMarker();
 
-                                            board.NewDest = checkEnemyMoveToCapture();
+                                            // Insert check enemy marker is fwd L/R of new startpos
 
-                                            // checks where in array postion newDest is
-                                            // ***BUG*** Some reason if statement won't work. Else setion does though
-                                            // fixed. Just had to change if/else statement to IF's statment
-                                            // as new dest is greater than tiles[0] was returning failed move.
-                                            // now only checks if d is at tiles.length - 1
-                                            // And if array[d] contains contents of var newDest
-                                            for (int d = 0; d < board.Tiles.Length; d++)
+                                            board.Choice = board.Tiles[d];
+                                            board.Startcoord = board.Choice.ToCharArray();
+                                            board.Left = getPositionFWDLeft();
+                                            board.Right = getPositionFWDRight();
+                                            Console.WriteLine(board.Left + "\n" + board.Right);
+                                            for(int x = 0; x < board.Tiles.Length; x++)
                                             {
-                                                
-                                                if (board.Tiles[d].Contains(board.NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
+                                                if(board.Tiles[x].Contains(board.Left))
                                                 {
-                                                    // enemy marker location changes to destination name with "0" replaced with "  "
-                                                    board.Tiles[x] = board.Destination + "  ";
-
-                                                    // new destination of player marker
-                                                    board.Tiles[d] = board.NewDest + " X";
-
-                                                    // original poistion of marker has the "X" replaced with "  "
-                                                    board.Tiles[i] = board.Choice + "  ";
-
-                                                    Console.WriteLine("Marker moved");
-                                                    board.Player++;
-                                                    board.PlayerBMarkerCount--;
-                                                    Console.ReadLine();
-                                                    break;
+                                                    if(board.Tiles[x].Contains("O"))
+                                                    {
+                                                        board.Choice = board.Tiles[x];
+                                                        board.Startcoord = board.Choice.ToCharArray();
+                                                        board.Left = getPositionFWDLeft();
+                                                        board.Right = getPositionFWDRight();
+                                                        if(board.Left.Contains("O"))
+                                                        {
+                                                            Console.WriteLine("Enemy Marker Present. Cannot take second marker");
+                                                        }
+                                                        else
+                                                        {
+                                                            captureMarker2(board.Left);
+                                                        }
+                                                        Console.ReadLine();
+                                                    }
                                                 }
-                                                if (d == board.Tiles.Length - 1)
+                                                if(board.Tiles[x].Contains(board.Right))
                                                 {
-                                                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
-                                                    Console.ReadLine();
+                                                    if (board.Tiles[x].Contains("O"))
+                                                    {
+                                                        board.Choice = board.Tiles[x];
+                                                        board.Startcoord = board.Choice.ToCharArray();
+                                                        board.Left = getPositionFWDLeft();
+                                                        board.Right = getPositionFWDRight();
+                                                        if (board.Right.Contains("O"))
+                                                        {
+                                                            Console.WriteLine("ENemy Marker Present. Cannot take second marker");
+                                                        }
+                                                        else
+                                                        {
+                                                            captureMarker2(board.Right);
+                                                        }
+                                                        Console.ReadLine();
+                                                    }
                                                 }
                                             }
+                                            Console.ReadLine();                                           
                                         }
                                         #endregion
                                         else
@@ -158,7 +177,7 @@ namespace CheckersGame
                             #endregion
                             #endregion
                             break;
-                        }     
+                        }
                         // flags up error if the type coord is not in array
                         if (x == board.Tiles.Length - 1)
                         {
@@ -173,13 +192,14 @@ namespace CheckersGame
                 // flags up error if the type coord is not in array
                 if (i == board.Tiles.Length - 1)
                 {
-                    Console.WriteLine("No player counter on selected position");
+                    Console.WriteLine("No player counter on selected position\n");
                     Console.ReadLine();
                     break;
                 }
             }
             #endregion
         }
+
         #region backwards move check
         // prevents backwards movement
         // checks element position of char[] choice  with same position of char[] letter 
@@ -260,7 +280,7 @@ namespace CheckersGame
             return diagCheck;
         }
         #endregion
-        #region capture enemy marker
+        #region CheckEnemyMarker
         // when the letter of end coord is the same as positon of letter[i] -/+ 1
         // stores letter[i] in variable
         // when the number coord is the same as number[i] +/- 1
@@ -268,12 +288,6 @@ namespace CheckersGame
         // string returns combined tostring of above variables
         public string checkEnemyMoveToCapture()
         {
-            // String contents debug stuff
-            string newDest = "broke\nGo";
-            string newL = "break";
-            string newN = "stuff";
-            char coordL;
-            char coordn;
 
             // checks if enemy marker is left diagonal fwd to start coord
             if (board.Endcoord[1] < board.Startcoord[1])
@@ -291,7 +305,6 @@ namespace CheckersGame
                         newN = coordn.ToString();
 
                     }
-
                     newDest = newL + newN.Trim().ToUpper();
                 }
             }
@@ -321,6 +334,94 @@ namespace CheckersGame
             }
             return newDest;
 
+        }
+        #endregion
+        #region captureEnemyMarker1
+        public void captureMarker()
+        {
+            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+
+            board.NewDest = checkEnemyMoveToCapture();
+
+            // checks where in array postion newDest is
+            // ***BUG*** Some reason if statement won't work. Else setion does though
+            // fixed. Just had to change if/else statement to IF's statment
+            // as new dest is greater than tiles[0] was returning failed move.
+            // now only checks if d is at tiles.length - 1
+            // And if array[d] contains contents of var newDest
+            for (d = 0; d < board.Tiles.Length; d++)
+            {
+                if (board.Tiles[d].Contains(board.NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
+                {
+                    // enemy marker location changes to destination name with "0" replaced with "  "
+                    board.Tiles[x] = board.Destination + "  ";
+
+                    // new destination of player marker
+                    board.Tiles[d] = board.NewDest + " X";
+
+                    // original poistion of marker has the "X" replaced with "  "
+                    board.Tiles[i] = board.Choice + "  ";
+                    Console.WriteLine("Marker moved");
+
+                    board.Player++;
+                    board.PlayerBMarkerCount--;
+                    Console.ReadLine();
+                    break;
+                }
+                if (d == board.Tiles.Length - 1)
+                {
+                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
+                    Console.ReadLine();
+                }
+            }
+        }
+            #endregion  
+        #region CheckSecondEnemyMarkerLeft/Right
+        public string getPositionFWDLeft()
+        {
+            int x;
+            for (x = 0; x < board.Letter.Length; x++)
+            {
+                if(board.Startcoord[0] == board.Letter[x] - 1)
+                {
+                    coordL = board.Letter[x];
+                    newL = coordL.ToString();
+                }
+                if(board.Startcoord[1] - 1 == board.Number[x])
+                {
+                    coordn = board.Number[x];
+                    newN = coordn.ToString();
+                }
+                newDest = newL + newN.Trim().ToUpper();
+            }
+            return newDest;
+        }
+        public string getPositionFWDRight()
+        {
+            int x;
+            for (x = 0; x < board.Letter.Length; x++)
+            {
+                if (board.Startcoord[0] == board.Letter[x] - 1)
+                {
+                    coordL = board.Letter[x];
+                    newL = coordL.ToString();
+                }
+                if (board.Startcoord[1] + 1 == board.Number[x])
+                {
+                    coordn = board.Number[x];
+                    newN = coordn.ToString();
+                }
+                newDest = newL + newN.Trim().ToUpper();
+            }
+            return newDest;
+        }
+        #endregion
+        #region CheckAreaAfterEnemyMarker2
+        #endregion
+        #region captureEnemyMarker2
+        public void captureMarker2(string coord)
+        {
+            Console.WriteLine("Writing code here" + coord);
         }
         #endregion
     }

@@ -23,13 +23,6 @@ namespace CheckersGame
             {
                 if(board.Tiles[i].Contains(board.Choice) && board.Tiles[i].Contains("O"))
                 {
-                    Console.WriteLine("Marker exists");
-
-                    Console.WriteLine("Where do you want the marker to go?");
-                    board.Input = Console.ReadLine();
-                    board.Destination = board.Input.ToUpper();
-
-                    board.Endcoord = board.Destination.ToCharArray();
                     #region destinationCoords
                     // checks if destination coords are present in array tiles[]
                     for (int x = 0; x < board.Tiles.Length; x++)
@@ -45,6 +38,7 @@ namespace CheckersGame
                             // starting position replace with choice var + a space. Just to keep board uniform
                             // #OCD
                             #region sidewaysMove
+                            board.Endcoord = board.Destination.ToCharArray();
                             // prevents sideways movement
                             if (board.Endcoord[0] == board.Startcoord[0])
                             {
