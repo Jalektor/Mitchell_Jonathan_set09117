@@ -7,7 +7,7 @@ using System.Windows;
 
 
 namespace CheckersGame
-{
+{  
     public class PlayerA
     {
         // variables for use in various for loops
@@ -28,6 +28,7 @@ namespace CheckersGame
         public char coordn;
 
         Board board;
+        
 
         #region Constructor
         public PlayerA(Board draughts)
@@ -38,6 +39,8 @@ namespace CheckersGame
 
         public void move()
         {
+            Undo undo = new Undo();
+
             #region playerOneMove
             // checks array for chosen marker coord
             for (i = 0; i < board.Tiles.Length; i++)
@@ -141,15 +144,33 @@ namespace CheckersGame
                                         #endregion
                                         else
                                         {
-                                            board.NewDest = board.Destination + " X";
-                                            board.Tiles[x] = board.NewDest;
-
+                                            board.Tiles[x] = board.Destination + " X";
                                             board.Tiles[i] = board.Choice + "  ";
 
-                                            Console.WriteLine("Marker moved");
-                                            board.Player++;
+                                            undo.startCoord.Push(board.Choice);
+                                            undo.endCoord.Push(board.Destination);
                                             Console.ReadLine();
-                                            break;
+
+                                            Console.WriteLine("Marker moved");
+                                            Console.WriteLine("Do you want to undo that move? Y/N");
+                                            string ans = Console.ReadLine().ToUpper();
+                                            if(ans == "Y")
+                                            {
+                                                board.Choice = undo.startCoord.Pop();
+                                                board.Destination = undo.endCoord.Pop();
+
+                                                board.Tiles[i] = board.Choice + " X";
+                                                board.Tiles[x] = board.Destination + "  ";
+                                                Console.ReadLine();
+                                                board.begin();
+                                            }
+                                            else
+                                            {
+                                                board.Player++;
+                                                Console.ReadLine();
+                                                break;
+                                            }
+                                           
                                         }
 
                                     }

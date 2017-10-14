@@ -89,7 +89,7 @@ namespace CheckersGame
         public int PlayerBMarkerCount { get { return playerBMarkerCount; } set { playerBMarkerCount = value; } }
 
         // variable to determine who's turn it is
-        public int player = 2;
+        public int player = 1;
 
         public int Player { get { return player; } set { player = value; } }
 

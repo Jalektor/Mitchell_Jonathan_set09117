@@ -6,7 +6,21 @@ using System.Threading.Tasks;
 
 namespace CheckersGame
 {
-    class Undo
+    public class Undo
     {
+        public Stack<string> startCoord = new Stack<string>();
+        public Stack<string> endCoord = new Stack<string>();
+
+        public void displayContents()
+        {
+            foreach(string coord in startCoord)
+            {
+                Console.WriteLine(coord);
+            }
+            foreach (string coord in endCoord)
+            {
+                Console.WriteLine(coord);
+            }
+        }
     }
 }
