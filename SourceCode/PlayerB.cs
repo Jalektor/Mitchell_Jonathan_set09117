@@ -8,6 +8,22 @@ namespace CheckersGame
 {
     class PlayerB
     {
+        // variables for use in various for loops
+        // also used to move markers around bored in various functions
+        // NOTE. It works. kinda gonna stick to it
+        private int x;
+        private int i;
+        private int d;
+        private int y;
+        private int z;
+
+        // String contents debug stuff
+        // NOTE newL & newN must have a strign in them else are regarded as null, for soome reason
+        public string newDest;
+        public string newL = "coord";
+        public string newN = "coord";
+        public char coordL;
+        public char coordn;
         Board board;
         #region Constructor
         public PlayerB(Board draughts)
@@ -19,13 +35,13 @@ namespace CheckersGame
         {
             #region Player2Move
             // checks array for chosen marker coord
-            for (int i = 0; i < board.Tiles.Length; i++ )
+            for (i = 0; i < board.Tiles.Length; i++ )
             {
                 if(board.Tiles[i].Contains(board.Choice) && board.Tiles[i].Contains("O"))
                 {
                     #region destinationCoords
                     // checks if destination coords are present in array tiles[]
-                    for (int x = 0; x < board.Tiles.Length; x++)
+                    for (x = 0; x < board.Tiles.Length; x++)
                     {
                         if (board.Tiles[x].Contains(board.Destination) && !board.Tiles[x].Contains("O"))
                         {
@@ -69,43 +85,52 @@ namespace CheckersGame
                                         // else capture aborted
                                         if(board.Tiles[x].Contains("X"))
                                         {
-                                            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+                                            captureMarker();
 
-                                            board.NewDest = checkEnemyMoveToCapture();
+                                            // Might change this to a function later. Repeated XD
+                                            Console.Clear();
 
-                                            // checks where in array postion newDest is
-                                            // ***BUG*** Some reason if statement won't work. Else setion does though
-                                            // fixed. Just had to change if/else statement to IF's statment
-                                            // as new dest is greater than tiles[0] was returning failed move.
-                                            // now only checks if d is at tiles.length - 1
-                                            // And if array[d] contains contents of var newDest
-                                            for (int d = 0; d < board.Tiles.Length; d++)
+                                            Console.WriteLine("Welcome to Draughts!\n");
+
+                                            Console.WriteLine("Select Marker by Row then column");
+
+                                            Console.WriteLine("Player 1 marker count: " + board.PlayerAMarkerCount);
+                                            Console.WriteLine("Player 2 marker count: " + board.PlayerBMarkerCount + "\n\n");
+
+                                            board.createBoard();
+
+                                            // sets new choice position
+                                            // finds the fwd diag coords of new choice location
+                                            // searches for them and if they contain enemy marker performs second marker takeover function
+                                            // May consider doing this three deep?????
+                                            board.Choice = board.NewDest;
+                                            board.Startcoord = board.Choice.ToCharArray();
+                                            board.Left = getPositionFWDLeft();
+                                            board.Right = getPositionFWDRight();
+                                            Console.WriteLine("new start: " + board.Choice + "\nLeft: " + board.Left + "\nRight: " + board.Right);
+                                            for (y = 0; y < board.Tiles.Length; y++)
                                             {
-                                                if (board.Tiles[d].Contains(board.NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
+                                                if (board.Tiles[y].Contains(board.Left))
                                                 {
-                                                    // enemy marker location changes to destination name with "0" replaced with "  "
-                                                    board.Tiles[x] = board.Destination + "  ";
-
-                                                    // new destination of player marker
-                                                    board.Tiles[d] = board.NewDest + " O";
-
-                                                    // original poistion of marker has the "X" replaced with "  "
-                                                    board.Tiles[i] = board.Choice + "  ";
-
-                                                    Console.WriteLine("Marker moved");
-                                                    board.Player--;
-                                                    board.PlayerAMarkerCount--;
-                                                    Console.ReadLine();
-                                                    break;
-
-
+                                                    if (board.Tiles[y].Contains("X"))
+                                                    {
+                                                        board.Destination = board.Left;
+                                                        board.Endcoord = board.Destination.ToCharArray();
+                                                        captureMarker2();
+                                                    }
                                                 }
-                                                if (d == board.Tiles.Length - 1)
+                                                if (board.Tiles[y].Contains(board.Right))
                                                 {
-                                                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
-                                                    Console.ReadLine();
+                                                    if (board.Tiles[y].Contains("X"))
+                                                    {
+                                                        board.Destination = board.Right;
+                                                        board.Endcoord = board.Destination.ToCharArray();
+                                                        captureMarker2();
+                                                    }
+
                                                 }
                                             }
+                                            Console.ReadLine();
                                         }
                                         #endregion
                                         else
@@ -243,7 +268,7 @@ namespace CheckersGame
             return diagCheck;
         }
         #endregion
-        #region capture enemy marker
+        #region CheckEnemyMarker
         // when the letter of end coord is the same as positon of letter[i] -/+ 1
         // stores letter[i] in variable
         // when the number coord is the same as number[i] +/- 1
@@ -251,13 +276,6 @@ namespace CheckersGame
         // string returns combined tostring of above variables
         public string checkEnemyMoveToCapture()
         {
-            // String contents debug stuff
-            string newDest = "broke\nGo";
-            string newL = "break";
-            string newN = "stuff";
-            char coordL;
-            char coordn;
-
             // checks if enemy marker is left diagonal fwd to start coord
             if (board.Endcoord[1] < board.Startcoord[1])
             {
@@ -304,6 +322,119 @@ namespace CheckersGame
             }
             return newDest;
 
+        }
+        #endregion
+        #region captureEnemyMarker1
+        public void captureMarker()
+        {
+            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+
+            board.NewDest = checkEnemyMoveToCapture();
+
+            // checks where in array postion newDest is
+            // and changes the string contents based on what element in tiles is being amended
+            for (d = 0; d < board.Tiles.Length; d++)
+            {
+                if (board.Tiles[d].Contains(board.NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
+                {
+                    // enemy marker location changes to destination name with "0" replaced with "  "
+                    board.Tiles[x] = board.Destination + "  ";
+
+                    // new destination of player marker
+                    board.Tiles[d] = board.NewDest + " O";
+
+                    // original poistion of marker has the "O" replaced with "  "
+                    board.Tiles[i] = board.Choice + "  ";
+                    Console.WriteLine("Marker moved");
+
+                    board.Player++;
+                    board.PlayerBMarkerCount--;
+                    Console.ReadLine();
+                    break;
+                }
+                if (d == board.Tiles.Length - 1)
+                {
+                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
+                    Console.ReadLine();
+                }
+            }
+        }
+        #endregion
+        #region CheckSecondEnemyMarkerLeft/Right
+        // returns left/right positions of fwd diag coords after one enemy piece has been taken
+        public string getPositionFWDLeft()
+        {
+            int x;
+            for (x = 0; x < board.Letter.Length; x++)
+            {
+                if (board.Startcoord[0] == board.Letter[x] + 1)
+                {
+                    coordL = board.Letter[x];
+                    newL = coordL.ToString();
+                }
+                if (board.Startcoord[1] - 1 == board.Number[x])
+                {
+                    coordn = board.Number[x];
+                    newN = coordn.ToString();
+                }
+                newDest = newL + newN.Trim().ToUpper();
+            }
+            return newDest;
+        }
+        public string getPositionFWDRight()
+        {
+            int x;
+            for (x = 0; x < board.Letter.Length; x++)
+            {
+                if (board.Startcoord[0] == board.Letter[x] + 1)
+                {
+                    coordL = board.Letter[x];
+                    newL = coordL.ToString();
+                }
+                if (board.Startcoord[1] + 1 == board.Number[x])
+                {
+                    coordn = board.Number[x];
+                    newN = coordn.ToString();
+                }
+                newDest = newL + newN.Trim().ToUpper();
+            }
+            return newDest;
+        }
+        #endregion
+        #region captureEnemyMarker2
+        // checks where in array postion newDest is
+        // and changes the string contents based on what element in tiles is being amended
+        // This only f there is a second marker present
+        public void captureMarker2()
+        {
+            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+
+            board.NewDest = checkEnemyMoveToCapture();
+
+            for (z = 0; z < board.Tiles.Length; z++)
+            {
+                if (board.Tiles[z].Contains(board.NewDest) && !board.Tiles[z].Contains("X") && !board.Tiles[z].Contains("O"))
+                {
+                    // enemy marker location changes to destination name with "0" replaced with "  "
+                    board.Tiles[y] = board.Destination + "  ";
+
+                    // new destination of player marker
+                    board.Tiles[z] = board.NewDest + " O";
+
+                    // original poistion of marker has the "O" replaced with "  "
+                    board.Tiles[d] = board.Choice + "  ";
+                    Console.WriteLine("Marker moved");
+
+                    board.Player++;
+                    board.PlayerBMarkerCount--;
+                    break;
+                }
+                if (d == board.Tiles.Length - 1)
+                {
+                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
+                    Console.ReadLine();
+                }
+            }
         }
         #endregion
     }

@@ -15,10 +15,10 @@ namespace CheckersGame
         private string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
                                       "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
                                       "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
-                                      "D1  ","    ","D3 O","    ","D5  ","    ","D7  ","    ",
+                                      "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
                                       "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
-                                      "F1 O","    ","F3 O","    ","F5 ","    ","F7 O","    ",
-                                      "    ","G2 O","    ","G4  ","    ","G6 O","    ","G8 O",
+                                      "F1 O","    ","F3 O","    ","F5 O","    ","F7 O","    ",
+                                      "    ","G2 O","    ","G4 O","    ","G6 O","    ","G8 O",
                                       "H1 O","    ","H3 O","    ","H5 O","    ","H7 O","    ",};
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
@@ -89,7 +89,7 @@ namespace CheckersGame
         public int PlayerBMarkerCount { get { return playerBMarkerCount; } set { playerBMarkerCount = value; } }
 
         // variable to determine who's turn it is
-        public int player = 1;
+        public int player = 2;
 
         public int Player { get { return player; } set { player = value; } }
 
