@@ -90,7 +90,6 @@
     \textbf{Keywords -- }{\mykeywords}
     
     \section{Introduction}
-    \section{Analysis}
     \paragraph{Create the game Draughts}
     The objective of this report is to create the game draughts in a chosen language and a chosen format - console/form/WPF or similar. Particular attention is to be placed on the Data Structures and Algorithms used.
     
@@ -104,7 +103,7 @@
     This began with creating a simple game board. Populated with elements from string array tiles. Allowing the player the ability to select the co-ordinates that will be populated with the draughts counters. Creating the concept of moving across the board was based off a Noughts \& Crosses game developed beforehand. 
     The data structures used are the following:
     
-    $\bullet$ Arrays: Used for: 
+    $\bullet$ Arrays: Used for:
     
     $\ast$ Creating the elements for the board.
     	 
@@ -114,7 +113,7 @@
     Used for the undo \& redo feature
     
     $\bullet$ Lists:
-    Used for computer AI.  Stores the starting locations of all pieces on the board. The idea was to replace the element value with the new position of a piece, after it has been moved successfully. Also items are removed when they have been captured by the challenging player or computer. Lists were chosen for this as they are memory-dynamic data structures in nature and adding or removing elements is done without the need to instantiate new lists of various sizes.
+    Used for computer AI.  Stores the starting locations of all pieces on the board. The idea was to replace the element value with the new position of a piece, after it has been moved successfully. Also items are removed when they have been captured by the challenging player or computer. Lists were chosen for this as they are memory-dynamic data structures in nature and adding or removing elements is done without the need to instantiate new lists of various sizes. A do while loop is used to keep the cycle of player 1 moves -> player 2 moves etc. until either players pieces is 0. The game then ends displaying the winner. The application then closes or goes back to main menu?
     
     Broken down into stages, the design was created:
     
@@ -144,7 +143,7 @@
     
     $\bullet$ Error
     
-    $\bullet$ RedoUndo
+    $\bullet$ Redo/Undo
     
     $\bullet$ Skynet
     
@@ -152,27 +151,49 @@
     
     The PlayerA, PlayerB, Skynet \& Hal classes all inherit from Movement class, This is due to the fact hey all share similar functions and use the same variables.
     
+    Originally, all code created was first developed within the Board class. After testing to ensure it performs correctly. The code was split up into functions onto moved to the relevant class.
+    
     For loops, with IF statements, were used to validate movement possible: only forward diagonal possible. Checking for an enemy piece, capturing it, if possible and checking to capture a second piece were all moved into separate functions.
     
-    Undo/Redo was implemented using stacks . This allowed simple push/pop function to add/remove player move. By pushing the move input onto the undo stack. It can be popped to be used to reset the player's move. Subsequently, pushing it to the Redo Stacks if the player chooses to redo the undone move.
-    \paragraph{Player vs Computer}
-    \paragraph{Computer vs Computer}
-    \section{Development}
-    Originally, all code created was first developed within the Board class. After testing to ensure it performs correctly. The code was split up into functions onto moved to the relevant class.
-    \subsection{Player vs Player}
+    Undo/Redo was implemented using stacks . This allowed simple push/pop function to add/remove player move. By pushing the move input onto the undo stack. It can be popped to be used to reset the player's move. Subsequently, pushing it to the Redo Stacks if the player chooses to redo the undone move.    
     \subsubsection{Player 1}
+    Player 1 development began by implementing each section of design and testing to ensure it works. First thing is to ask the user to input the starting coords of a player piece and the end coords - where the player wants the player piece to go.
+    These are first checked to ensure they are not blank. After this both string are inserted into respective char arrays, For later validation and used to determinf ifcapturing opponents pieces is possible.
+    
+    The next level of validation is to check the starting coords are in the array of the checker board. If not tells the user If they are present. The endcoords are then check to ensure they are in the array tiles and this location does not already contain a player piece.
+    
+    Preventing sideways movement was the easiest to do - simply checking if the letter from the inputed endcoords does not match the starting letter coord by using the first index of the char arrays of both start coords and endcoords. If this passes backwards validation is next.
+    
+    Backwards validation is done by checking when the value of start coords equals the value of letter array in a for loop. the value of the int, used in the for loop, at this point is then stored. The same is done with the endcoord. The values of these ints are then  compared. If the value for the endcoord is less than the startcoord means the endcoord is a coord that is behind the startcoord. the function returns false as backwards move is not a legal move for standard pieces. Else returns true. The movement is not backwards. As sideways movement has also been validated. All that is left is forward movement.
+    
+    Forward movement is firstly validated by comparing the first index of each char array for startcoord \& endcoord. If the destination value is +1 of the start coord then it is forward movement by one row. Anything else assumes it is movement forward by more than one row. Which would not be a valid move. Then the number, second index value, is checked. If the destination coord is +/- 1 of the start coord. It is the forward diagonal of the start coord. Anything else is invalid.
+    
+    After this, the player piece is moved from the startcoord to the destination coord. An option to undo this move is made available. The undo process is detailed later in this report. The player turn variable is +/- 1 to allow the second player to move a piece.
+    \subsubsection{Capture opponent piece}
+    If there is an opponents piece detected in the destination coord for player piece. Then the capture piece function occurs:
+    
+    First thing to occur is finding the coords of the forward diagonal AFTER the current destination, based on the position of the starting coord of the player piece. This is done by the checkEnemyMoveToCapture algorithm. By checking if the end coord second index in comparison to the start coord second index value. It determines if the the new destination coord is going to be left or right of current destination coord. Next part of the algorithm is to compare the first value of endcoord char array with the letter char array using a for loop. When the end coord = letter index - 1, the index value is stored in a string. This will comprise the first element, letter, of the new destination coord.
+    The second element, number, of the new destination coord is found in a similar fashion: by comparing the second index of destination coords with the number char array and storing the value of number char array when this = destination index 2 - 1. The two values are then concatenated to form the coords of the new destination of the player piece. 
+    
+    The new destination coords are checked to see if the exist AND there is no piece belonging to  either current player or opponent player. If this condition is met. The player piece is moved, similar to moving a player piece where an opponents piece is not present. The only addition to this is the opponents piece is removed from the board and the opponents player piece count is reduced by one. This is done automatically, and no undo feature is available, presently.
+    Else, the move is not possible and nothing happens. See below:
+    
+    INSERT ALGORITHM HERE!!!!!!
+    
+    \subsubsection{Capture Second Opponent Piece}
+    If an opponents piece has been taken, the variable for player piece start coord is set to the new destination coord from taking an opponents piece. And two new coords are looked for: the left and right forward of the new start coord. These are then checked to see if they exist on the board AND they contain an opponent piece. If yes then an attempt is made to capture a second opponent piece. This is done exactly the same as capturing the first piece. Moving the player piece further down the board. This is also done automatically. With no input from the user to confirm this move. There is no option to undo this move.
+    Else a second piece is not captured and the opponent player makes their turn.
+    \subsubsection{King Pieces}
     \subsubsection{Player 2}
-    \subsubsection{Player vs Player}
-    \subsubsection{Undo/Redo}
-    \subsection{Computer}
-    This is where shit gets scary
-    
-    Like Skynet level scary
-    \subsection{Player vs Computer}
-    
-    
-    \section{Testing}
-\section{Evaluation}	
+    Player 2 development is pretty much the same as player 1. Only certain algorithm arithmetic was changed around: + becomes - \& - becomes +
+    \subsection{Player vs Computer}    
+    \subsubsection{Computer}
+    \paragraph{Computer vs Computer}
+    \subsection{Undo/Redo}
+    \subsection{Enhancements}
+\section{Evaluation}
+	\subsection{Critical Evaluation}
+	\subsection{Personal Evaluation}	
 \bibliographystyle{ieeetr}
 \bibliography{references}
 		

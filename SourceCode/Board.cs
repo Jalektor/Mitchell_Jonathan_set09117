@@ -156,6 +156,8 @@ namespace CheckersGame
                         begin();
                     }
 
+                    Endcoord = Destination.ToCharArray();
+
                     player1.move();
                 }
                 else

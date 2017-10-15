@@ -51,7 +51,7 @@ namespace CheckersGame
                     // checks if destination coords are present in array tiles[]
                     for (x = 0; x < board.Tiles.Length; x++)
                     {
-                        if (board.Tiles[x].Contains(board.Destination) && !board.Tiles[x].Contains("X") && !board.Destination.Contains("Empty"))
+                        if (board.Tiles[x].Contains(board.Destination) && !board.Tiles[x].Contains("X"))
                         {
                             // prevents sideways movement
                             // by checking if the respective char array values are the same.
@@ -63,7 +63,6 @@ namespace CheckersGame
                             // #OCD
 
                             #region SidewaysMoveCheck
-                            board.Endcoord = board.Destination.ToCharArray();
                             // prevents sideways movement
                             if (board.Endcoord[0] == board.Startcoord[0])
                             {
@@ -92,7 +91,6 @@ namespace CheckersGame
                                         // returned result determines if move possible
                                         // if yes, marker moved to tiles diagonal from enemy marker, and capturing it
                                         // else capture aborted
-
                                         if (board.Tiles[x].Contains("O"))
                                         {
                                             captureMarker();
@@ -152,7 +150,8 @@ namespace CheckersGame
                                             Console.ReadLine();
 
                                             Console.WriteLine("Marker moved");
-                                            Console.WriteLine("Do you want to undo that move? Y/N");
+
+                                            Console.WriteLine("Do you want to undo this move? Y/N");
                                             string ans = Console.ReadLine().ToUpper();
                                             if(ans == "Y")
                                             {
@@ -257,8 +256,14 @@ namespace CheckersGame
             return back;
         }
         #endregion
-
         #region forwardMoveCheck1
+        // Validates to only allow forward move by one row
+        // Checks if coord entered is forward move
+        // Done by checking the both [0] of choice and destination char[] arrays. This is the letter of the coord
+        // Where these values == value in letter char array[]
+        // stored value in variable ints
+        // ints are then compared. If PosD == PosC +1 this means the destination coord is a row ahead of startcoord only. Returns true
+        // Else assumption the forward move is atleast 2 rows ahead of start coord. Returns false
         public bool forwardMove(char[] choice, char[] destination)
         {
             bool fwd = false;
@@ -289,7 +294,11 @@ namespace CheckersGame
         }
         #endregion
         #region forwardMoveCheck2
-
+        // Validates forward diagonal movement
+        // checks the second elements of the choice & destination char[] arrays. These are the number of the coords
+        // If the destination number is +/- 1 of the choice number
+        // The destination coord is the fwd diag of choice coord. Returns true
+        // Anything else assumes it is not and returns false
         public bool fwdDiagCheck(char[] choice, char[] destination)
         {
             bool diagCheck = false;
