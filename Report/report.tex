@@ -5,7 +5,7 @@
 \def\mykeywords{Draughts, Algorithms, Data Structures, Console}
 \def\myauthor{Jonathan Mitchell}
 \def\contact{40311730@live.napier.ac.uk}
-\def\mymodule{Module Title (SET09117)}
+\def\mymodule{Algorithms \& Data Structures (SET09117)}
 % #######################################
 % #### YOU DON'T NEED TO TOUCH BELOW ####
 % #######################################
@@ -83,8 +83,7 @@
 % #######################################
 \begin{document}
     \maketitle
-    \begin{abstract}
-        %Replace the lipsum command with actual text 
+    \begin{abstract} 
         hello.
     \end{abstract}
     
@@ -98,26 +97,82 @@
     The game, at the very least, should allow for 2 human players to play against each other. Adding "AI" algorithms to allow for Player vs Computer, or even Computer vs Computer are optional additions. Based on development capabilities within the Project time-scale. Additional features such as undo or redo a move are also beneficial.
     
     Adding the ability to record the results of games and even record games themselves is another possibility. Finally Creative freedom is encourage during the development. An individual uniqueness is preferred when developing the game of Draughts.
+    
+    The application associated with this report was created using a console application. Written in c\#
     \section{Design}
     \subsection{{Player vs Player}}
-    This began with creating a simple game board. Populated with elements from string array tiles. Allowing the player the ability to select the co-ordinates that will be populated with the draughts counters. This part 
+    This began with creating a simple game board. Populated with elements from string array tiles. Allowing the player the ability to select the co-ordinates that will be populated with the draughts counters. Creating the concept of moving across the board was based off a Noughts \& Crosses game developed beforehand. 
+    The data structures used are the following:
+    
+    $\bullet$ Arrays: Used for: 
+    
+    $\ast$ Creating the elements for the board.
+    	 
+    $\ast$ Getting the letter \& number of end position after successfully capturing an opponents piece.
+    
+    $\bullet$ Stacks: 
+    Used for the undo \& redo feature
+    
+    $\bullet$ Lists:
+    Used for computer AI.  Stores the starting locations of all pieces on the board. The idea was to replace the element value with the new position of a piece, after it has been moved successfully. Also items are removed when they have been captured by the challenging player or computer. Lists were chosen for this as they are memory-dynamic data structures in nature and adding or removing elements is done without the need to instantiate new lists of various sizes.
+    
+    Broken down into stages, the design was created:
+    
+    $\bullet$ movement
+    
+    $\bullet$ preventing sideways movement 
+       
+    $\bullet$ preventing backwards movement
+     
+    $\bullet$ Limiting forward movement to only available diagonal positions
+    
+    $\bullet$ Checking for opponent marker
+    
+    $\bullet$ Capturing Opponent marker if possible
+    
+    $\bullet$ Checking if there is a second opponent marker can be taken
+    
+    The following classes were created:
+    
+    $\bullet$ Board
+    
+    $\bullet$ Movement
+    
+    $\bullet$ PlayerA
+    
+    $\bullet$ PlayerB
+    
+    $\bullet$ Error
+    
+    $\bullet$ RedoUndo
+    
+    $\bullet$ Skynet
+    
+    $\bullet$ Hal
+    
+    The PlayerA, PlayerB, Skynet \& Hal classes all inherit from Movement class, This is due to the fact hey all share similar functions and use the same variables.
+    
+    For loops, with IF statements, were used to validate movement possible: only forward diagonal possible. Checking for an enemy piece, capturing it, if possible and checking to capture a second piece were all moved into separate functions.
+    
+    Undo/Redo was implemented using stacks . This allowed simple push/pop function to add/remove player move. By pushing the move input onto the undo stack. It can be popped to be used to reset the player's move. Subsequently, pushing it to the Redo Stacks if the player chooses to redo the undone move.
     \paragraph{Player vs Computer}
     \paragraph{Computer vs Computer}
     \section{Development}
+    Originally, all code created was first developed within the Board class. After testing to ensure it performs correctly. The code was split up into functions onto moved to the relevant class.
     \subsection{Player vs Player}
     \subsubsection{Player 1}
     \subsubsection{Player 2}
     \subsubsection{Player vs Player}
     \subsubsection{Undo/Redo}
-    \subsubsection{Computer}
+    \subsection{Computer}
     This is where shit gets scary
     
     Like Skynet level scary
-    \subsubsection{Player vs Computer}
+    \subsection{Player vs Computer}
     
     
     \section{Testing}
-\section{Conclusion}	
+\section{Evaluation}	
 \bibliographystyle{ieeetr}
 \bibliography{references}
 		
