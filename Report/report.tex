@@ -172,28 +172,92 @@
     \subsubsection{Capture opponent piece}
     If there is an opponents piece detected in the destination coord for player piece. Then the capture piece function occurs:
     
-    First thing to occur is finding the coords of the forward diagonal AFTER the current destination, based on the position of the starting coord of the player piece. This is done by the checkEnemyMoveToCapture algorithm. By checking if the end coord second index in comparison to the start coord second index value. It determines if the the new destination coord is going to be left or right of current destination coord. Next part of the algorithm is to compare the first value of endcoord char array with the letter char array using a for loop. When the end coord = letter index - 1, the index value is stored in a string. This will comprise the first element, letter, of the new destination coord.
-    The second element, number, of the new destination coord is found in a similar fashion: by comparing the second index of destination coords with the number char array and storing the value of number char array when this = destination index 2 - 1. The two values are then concatenated to form the coords of the new destination of the player piece. 
+    First thing to occur is finding the new destination coords of the forward diagonal AFTER the current destination, based on the position of the starting coord of the player piece. This is done by the checkEnemyMoveToCapture algorithm. SEE Personal evaluation for description.
     
     The new destination coords are checked to see if the exist AND there is no piece belonging to  either current player or opponent player. If this condition is met. The player piece is moved, similar to moving a player piece where an opponents piece is not present. The only addition to this is the opponents piece is removed from the board and the opponents player piece count is reduced by one. This is done automatically, and no undo feature is available, presently.
-    Else, the move is not possible and nothing happens. See below:
-    
-    INSERT ALGORITHM HERE!!!!!!
-    
+    Else, the move is not possible and nothing happens. See below:    
     \subsubsection{Capture Second Opponent Piece}
     If an opponents piece has been taken, the variable for player piece start coord is set to the new destination coord from taking an opponents piece. And two new coords are looked for: the left and right forward of the new start coord. These are then checked to see if they exist on the board AND they contain an opponent piece. If yes then an attempt is made to capture a second opponent piece. This is done exactly the same as capturing the first piece. Moving the player piece further down the board. This is also done automatically. With no input from the user to confirm this move. There is no option to undo this move.
     Else a second piece is not captured and the opponent player makes their turn.
     \subsubsection{King Pieces}
+    Similar to normal piece. Only difference is they can move diagonally in any direction.
     \subsubsection{Player 2}
     Player 2 development is pretty much the same as player 1. Only certain algorithm arithmetic was changed around: + becomes - \& - becomes +
     \subsection{Player vs Computer}    
     \subsubsection{Computer}
     \paragraph{Computer vs Computer}
     \subsection{Undo/Redo}
+    This section of the game consisted of a class that stores stacks for start/end coords of piece moved. To either undo/redo a move. Only implemented for movement and taking a single opponents piece. 
     \subsection{Enhancements}
+    Firstly. The game development would be done in WPF. Due to the graphic capabilities of WPF, a much better visual representation of the game would be possible. The board, itself, could be created using the Grid \& Grid definition in XAML. Each grid spot, 64 in total, could be assigned an index of the player board array. Placing the player pieces, as separate objects, and assigning them to the current array index they are placed upon. Using click event for the mouse, the player can then click each piece and click the destination. 
+    
+    Background code would check they are clicking the correct player piece, based on player turn, and validating whether the move is legal or not. This code would be very similar to that developed. The only real difference would be the position would be based on the array index and not a typed coordinate. 
+    
+    Also, buttons can be implemented for Undo/Redo functions etc. Without the need to ask the user, removing a slight annoyance, they can then just click on the button to perform this action.
+    
+    WPF also displays the game in a GUI style. Which is more desirable, in the "Modern Age", than a console application.
+    
+    Second. Sticking to the console application. The array design would be changed. Instead of displaying the coords on the board. Only the pieces would be. Either by number/lettering each one individually. 
+    
+    The user would then enter the letter/number of the piece to move, the background code getting the array index of the chosen piece and then checking if it is a legal piece and if it is possible to move. Giving the user an option of which direction to move the piece; If there is such an option. The same would be for capturing opponent pieces/ turning into a king etc. This is the only option to change at the moment.
+    
+    Third. For loops. Using the above amendment to the array for the board, use of for loops could be reduced. At the very least they can be used with proper practice: the int variables created inside, and solely used by, each for loop. Instead of the current where they are declared global for used throughout the development. This would be the biggest weakness of this game of draughts.
 \section{Evaluation}
 	\subsection{Critical Evaluation}
-	\subsection{Personal Evaluation}	
+	Some fancy stuff written here
+	\subsection{Personal Evaluation}
+	From a personal point of view. I enjoyed the challenge of creating this game. Originally overwhelmed, I began to break the problem into the above mentioned steps. And found it to be manageable. I have learned a lot from this coursework: my understanding of how to use data structures in a real world setting. 
+	
+	I am most proud of my algorithms for creating the coordinate for the new destination during capturing an opponents piece. These were something I had not done before. My problem solving skills flourished here. As i figured out an algorithm to get the new letter \& number coord, by creating 2 arrays: one for letters present on the board and one for numbers present on the board.
+	
+	By checking if the end coord second index in comparison to the start coord second index value; the algorithm determines if the new destination coord is going to be left or right of current destination coord. Next part of the algorithm is to compare the first value of endcoord char array with the letter char array using a for loop. When the end coord = letter index - 1, the index value is stored in a string. This will comprise the first element, letter, of the new destination coord.
+	The second element, number, of the new destination coord is found in a similar fashion: by comparing the second index of destination coords with the number char array and storing the value of number char array when this = destination index 2 - 1. The two values are then concatenated to form the coords of the new destination of the player piece. This is returned for validating an opponents piece can be taken.
+	
+	The algorithm:
+	 \begin{lstlisting}[caption = finding new destination coord for capturing opponent piece]
+	public string checkEnemyMoveToCapture()
+	{
+		if (board.Endcoord[1] < board.Startcoord[1])
+		{
+			for (int i = 0; i < board.Letter.Length; i++)
+			{
+				if (board.Endcoord[0] == board.Letter[i] - 1)
+				{
+					coordL = board.Letter[i];
+					newL = coordL.ToString();
+				}
+				if (board.Destination[1] - 1 == board.Number[i])
+				{
+					coordn = board.Number[i];
+					newN = coordn.ToString();    
+				}
+				newDest = newL + newN.Trim().ToUpper();
+			}
+		}
+		else if (board.Endcoord[1] > board.Startcoord[1])
+		{
+			for (int c = 0; c < board.Letter.Length; c++)
+			{
+				if (board.Endcoord[0] == board.Letter[c] - 1)
+				{
+					coordL = board.Letter[c];
+					newL = coordL.ToString();
+				}
+				if (board.Destination[1] + 1 == board.Number[c])
+				{
+					coordn = board.Number[c];
+					newN = coordn.ToString();    
+				}    
+				newDest = newL + newN.Trim().ToUpper();
+			}
+		}
+		else
+		{
+			newDest = "";
+		}
+		return newDest;    
+	}
+	\end{lstlisting}
 \bibliographystyle{ieeetr}
 \bibliography{references}
 		
