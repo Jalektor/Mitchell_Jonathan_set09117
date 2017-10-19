@@ -8,27 +8,9 @@ using System.Windows;
 
 namespace CheckersGame
 {  
-    public class PlayerA
+    public class PlayerA : Movement
     {
-        // variables for use in various for loops
-        // also used to move markers around bored in various functions
-        // NOTE. It works. kinda gonna stick to it
-        private int x;
-        private int i;
-        private int d;
-        private int y;
-        private int z;
-
-        // String contents debug stuff
-        // NOTE newL & newN must have a strign in them else are regarded as null, for soome reason
-        public string newDest;
-        public string newL = "coord";
-        public string newN = "coord";
-        public char coordL;
-        public char coordn;
-
         Board board;
-        
 
         #region Constructor
         public PlayerA(Board draughts)
@@ -41,12 +23,19 @@ namespace CheckersGame
         {
             Undo undo = new Undo();
 
+            PlayerAKing king = new PlayerAKing(board);
+
             #region playerOneMove
             // checks array for chosen marker coord
             for (i = 0; i < board.Tiles.Length; i++)
             {
                 if (board.Tiles[i].Contains(board.Choice) && board.Tiles[i].Contains("X"))
                 {
+                    if(board.Tiles[i].Contains("K"))
+                    {
+                        king.Move();
+                        break;
+                    }
                     #region destinationcoords
                     // checks if destination coords are present in array tiles[]
                     for (x = 0; x < board.Tiles.Length; x++)
@@ -61,7 +50,6 @@ namespace CheckersGame
                             // then "moves" marker to destination
                             // starting position replace with choice var + a space. Just to keep board uniform
                             // #OCD
-
                             #region SidewaysMoveCheck
                             // prevents sideways movement
                             if (board.Endcoord[0] == board.Startcoord[0])
@@ -85,7 +73,7 @@ namespace CheckersGame
                                     // only allows forward diagonal movement
                                     if (fwd == true)
                                     {
-                                        #region enemycapture
+                                        #region enemyCapture
                                         // checks for enemy marker in destination tile
                                         // if present perform checkEnemyMoveToCapture function
                                         // returned result determines if move possible
@@ -111,26 +99,26 @@ namespace CheckersGame
                                             // finds the fwd diag coords of new choice location
                                             // searches for them and if they contain enemy marker performs second marker takeover function
                                             // May consider doing this three deep?????
-                                            board.Choice = board.NewDest;
+                                            board.Choice = NewDest;
                                             board.Startcoord = board.Choice.ToCharArray();
-                                            board.Left = getPositionFWDLeft();
-                                            board.Right = getPositionFWDRight();
+                                            Left = getPositionFWDLeft();
+                                            Right = getPositionFWDRight();
                                             for(y = 0; y < board.Tiles.Length; y++)
                                             {
-                                                if(board.Tiles[y].Contains(board.Left))
+                                                if(board.Tiles[y].Contains(Left))
                                                 {
                                                     if(board.Tiles[y].Contains("O"))
                                                     {
-                                                        board.Destination = board.Left;
+                                                        board.Destination = Left;
                                                         board.Endcoord = board.Destination.ToCharArray();
                                                         captureMarker2();
                                                     }
                                                 }
-                                                if(board.Tiles[y].Contains(board.Right))
+                                                if(board.Tiles[y].Contains(Right))
                                                 {
                                                     if (board.Tiles[y].Contains("O"))
                                                     {
-                                                        board.Destination = board.Right;
+                                                        board.Destination = Right;
                                                         board.Endcoord = board.Destination.ToCharArray();
                                                         captureMarker2();
                                                     }
@@ -142,8 +130,16 @@ namespace CheckersGame
                                         #endregion
                                         else
                                         {
-                                            board.Tiles[x] = board.Destination + " X";
-                                            board.Tiles[i] = board.Choice + "  ";
+                                            if(board.Destination.Contains("H"))
+                                            {
+                                                board.Tiles[x] = board.Destination + " KX";
+                                                board.Tiles[i] = board.Choice + "   ";
+                                            }
+                                            else
+                                            {
+                                                board.Tiles[x] = board.Destination + "  X";
+                                                board.Tiles[i] = board.Choice + "   ";
+                                            }
 
                                             undo.startCoord.Push(board.Choice);
                                             undo.endCoord.Push(board.Destination);
@@ -151,15 +147,15 @@ namespace CheckersGame
 
                                             Console.WriteLine("Marker moved");
 
-                                            Console.WriteLine("Do you want to undo this move? Y/N");
+                                            Console.WriteLine("Do you want to undo this move? PlayerA Y/N");
                                             string ans = Console.ReadLine().ToUpper();
                                             if(ans == "Y")
                                             {
                                                 board.Choice = undo.startCoord.Pop();
                                                 board.Destination = undo.endCoord.Pop();
 
-                                                board.Tiles[i] = board.Choice + " X";
-                                                board.Tiles[x] = board.Destination + "  ";
+                                                board.Tiles[i] = board.Choice + "  X";
+                                                board.Tiles[x] = board.Destination + "   ";
                                                 Console.ReadLine();
                                                 board.begin();
                                             }
@@ -176,13 +172,12 @@ namespace CheckersGame
                                     else
                                     {
                                         Console.WriteLine("That move is not possible\n");
-                                        Console.WriteLine("The counters can only move forward Diagonally");
+                                        Console.WriteLine("The counters can only move forward Diagonally one row");
                                         Console.ReadLine();
                                         break;
                                     }
                                     #endregion
                                 }
-
                                 else
                                 {
                                     Console.WriteLine("That move is not possible\n");
@@ -191,14 +186,12 @@ namespace CheckersGame
                                     Console.ReadLine();
                                     break;
                                 }
-
-
                             }
                             #endregion
                             #endregion
                             break;
                         }
-                        // flags up error if the type coord is not in array
+                        // flags up error if the destination coord is not in array
                         if (x == board.Tiles.Length - 1)
                         {
                             Console.WriteLine("Marker destination is illegal or already has a player counter on it");
@@ -229,21 +222,21 @@ namespace CheckersGame
         // if posD is less that posC. This means the destination coord is going backwards
         // bool back is false
         // else coord is going forward. bool back is true
-        public bool checkBackMove(char[] choice, char[] destination)
+        public virtual bool checkBackMove(char[] choice, char[] destination)
         {
             bool back = false;
 
-            for (int y = 0; y < board.Letter.Length; y++)
+            for (int y = 0; y < Letter.Length; y++)
             {
-                if (choice[0] == board.Letter[y])
+                if (choice[0] == Letter[y])
                 {
-                    board.PosC = y;
+                    PosC = y;
                 }
-                if (destination[0] == board.Letter[y])
+                if (destination[0] == Letter[y])
                 {
-                    board.PosD = y;
+                    PosD = y;
                 }
-                if (board.PosD < board.PosC)
+                if (PosD < PosC)
                 {
                     back = false;
                 }
@@ -269,17 +262,17 @@ namespace CheckersGame
             bool fwd = false;
             bool diag = false;
 
-            for (int i = 0; i < board.Letter.Length; i++)
+            for (int i = 0; i < Letter.Length; i++)
             {
-                if (choice[0] == board.Letter[i])
+                if (choice[0] == Letter[i])
                 {
-                    board.PosC = i;
+                    PosC = i;
                 }
-                if (destination[0] == board.Letter[i])
+                if (destination[0] == Letter[i])
                 {
-                    board.PosD = i;
+                    PosD = i;
                 }
-                if (board.PosD == board.PosC + 1)
+                if (PosD == PosC + 1)
                 {
                     diag = fwdDiagCheck(choice, destination);
                     break;
@@ -321,71 +314,86 @@ namespace CheckersGame
             // checks if enemy marker is left diagonal fwd to start coord
             if (board.Endcoord[1] < board.Startcoord[1])
             {
-                for (int i = 0; i < board.Letter.Length; i++)
+                for (int i = 0; i < Letter.Length; i++)
                 {
-                    if (board.Endcoord[0] == board.Letter[i] - 1)
+                    if (board.Endcoord[0] == Letter[i] - 1)
                     {
-                        coordL = board.Letter[i];
+                        coordL = Letter[i];
                         newL = coordL.ToString();
                     }
-                    if (board.Destination[1] - 1 == board.Number[i])
+                    if (board.Destination[1] - 1 == Number[i])
                     {
-                        coordn = board.Number[i];
+                        coordn = Number[i];
                         newN = coordn.ToString();
 
                     }
-                    newDest = newL + newN.Trim().ToUpper();
+                    NewDest = newL + newN.Trim().ToUpper();
                 }
             }
             // checks if enemy is right diagonal fwd to start coord
             else if (board.Endcoord[1] > board.Startcoord[1])
             {
-                for (int c = 0; c < board.Letter.Length; c++)
+                for (int c = 0; c < Letter.Length; c++)
                 {
-                    if (board.Endcoord[0] == board.Letter[c] - 1)
+                    if (board.Endcoord[0] == Letter[c] - 1)
                     {
-                        coordL = board.Letter[c];
+                        coordL = Letter[c];
                         newL = coordL.ToString();
                     }
-                    if (board.Destination[1] + 1 == board.Number[c])
+                    if (board.Destination[1] + 1 == Number[c])
                     {
-                        coordn = board.Number[c];
+                        coordn = Number[c];
                         newN = coordn.ToString();
 
                     }
 
-                    newDest = newL + newN.Trim().ToUpper();
+                    NewDest = newL + newN.Trim().ToUpper();
                 }
             }
             else
             {
-                newDest = "";
+                NewDest = "";
             }
-            return newDest;
+            return NewDest;
 
         }
         #endregion
         #region captureEnemyMarker1
-        public void captureMarker()
+        public virtual void captureMarker()
         {
             Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
 
-            board.NewDest = checkEnemyMoveToCapture();
+            NewDest = checkEnemyMoveToCapture();
 
             // checks where in array postion newDest is
             // and changes the string contents based on what element in tiles is being amended
             for (d = 0; d < board.Tiles.Length; d++)
             {
-                if (board.Tiles[d].Contains(board.NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
+                if (board.Tiles[d].Contains(NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
                 {
-                    // enemy marker location changes to destination name with "0" replaced with "  "
-                    board.Tiles[x] = board.Destination + "  ";
+                    if(NewDest.Contains("H"))
+                    {
+                        // enemy marker location changes to destination name with "0" replaced with "  "
+                        board.Tiles[x] = board.Destination + "   ";
 
-                    // new destination of player marker
-                    board.Tiles[d] = board.NewDest + " X";
+                        // new destination of player marker
+                        board.Tiles[d] = NewDest + " KX";
 
-                    // original poistion of marker has the "X" replaced with "  "
-                    board.Tiles[i] = board.Choice + "  ";
+                        // original poistion of marker has the "X" replaced with "  "
+                        board.Tiles[i] = board.Choice + "   ";
+                    }
+                    else
+                    {
+                        // enemy marker location changes to destination name with "0" replaced with "  "
+                        board.Tiles[x] = board.Destination + "   ";
+
+                        // new destination of player marker
+                        board.Tiles[d] = NewDest + "  X";
+
+                        // original poistion of marker has the "X" replaced with "  "
+                        board.Tiles[i] = board.Choice + "   ";
+                    }
+                    
                     Console.WriteLine("Marker moved");
 
                     board.Player++;
@@ -406,40 +414,40 @@ namespace CheckersGame
         public string getPositionFWDLeft()
         {
             int x;
-            for (x = 0; x < board.Letter.Length; x++)
+            for (x = 0; x < Letter.Length; x++)
             {
-                if(board.Startcoord[0] == board.Letter[x] - 1)
+                if(board.Startcoord[0] == Letter[x] - 1)
                 {
-                    coordL = board.Letter[x];
+                    coordL = Letter[x];
                     newL = coordL.ToString();
                 }
-                if(board.Startcoord[1] - 1 == board.Number[x])
+                if(board.Startcoord[1] - 1 == Number[x])
                 {
-                    coordn = board.Number[x];
+                    coordn = Number[x];
                     newN = coordn.ToString();
                 }
-                newDest = newL + newN.Trim().ToUpper();
+                NewDest = newL + newN.Trim().ToUpper();
             }
-            return newDest;
+            return NewDest;
         }
         public string getPositionFWDRight()
         {
             int x;
-            for (x = 0; x < board.Letter.Length; x++)
+            for (x = 0; x < Letter.Length; x++)
             {
-                if (board.Startcoord[0] == board.Letter[x] - 1)
+                if (board.Startcoord[0] == Letter[x] - 1)
                 {
-                    coordL = board.Letter[x];
+                    coordL = Letter[x];
                     newL = coordL.ToString();
                 }
-                if (board.Startcoord[1] + 1 == board.Number[x])
+                if (board.Startcoord[1] + 1 == Number[x])
                 {
-                    coordn = board.Number[x];
+                    coordn = Number[x];
                     newN = coordn.ToString();
                 }
-                newDest = newL + newN.Trim().ToUpper();
+                NewDest = newL + newN.Trim().ToUpper();
             }
-            return newDest;
+            return NewDest;
         }
         #endregion
         #region captureEnemyMarker2
@@ -448,24 +456,39 @@ namespace CheckersGame
         // This only f there is a second marker present
         public void captureMarker2()
         {
-            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+            Console.WriteLine("Enemy piece present in next space\nAttempting capture");
 
-            board.NewDest = checkEnemyMoveToCapture();
+            NewDest = checkEnemyMoveToCapture();
 
             for (z = 0; z < board.Tiles.Length; z++)
             {
-                if (board.Tiles[z].Contains(board.NewDest) && !board.Tiles[z].Contains("X") && !board.Tiles[z].Contains("O"))
+                if (board.Tiles[z].Contains(NewDest) && !board.Tiles[z].Contains("X") && !board.Tiles[z].Contains("O"))
                 {
-                    // enemy marker location changes to destination name with "0" replaced with "  "
-                    board.Tiles[y] = board.Destination + "  ";
+                    if(NewDest.Contains("H"))
+                    {
+                        // enemy marker location changes to destination name with "0" replaced with "  "
+                        board.Tiles[y] = board.Destination + "   ";
 
-                    // new destination of player marker
-                    board.Tiles[z] = board.NewDest + " X";
+                        // new destination of player marker
+                        board.Tiles[z] = NewDest + " KX";
 
-                    // original poistion of marker has the "X" replaced with "  "
-                    board.Tiles[d] = board.Choice + "  ";
+                        // original poistion of marker has the "X" replaced with "  "
+                        board.Tiles[d] = board.Choice + "   ";
+                    }
+                    else
+                    {
+                        // enemy marker location changes to destination name with "0" replaced with "  "
+                        board.Tiles[y] = board.Destination + "  ";
+
+                        // new destination of player marker
+                        board.Tiles[z] = NewDest + " X";
+
+                        // original poistion of marker has the "X" replaced with "  "
+                        board.Tiles[d] = board.Choice + "  ";
+                    }
+                    
                     Console.WriteLine("Marker moved");
-
+                    Console.ReadLine();
                     board.Player++;
                     board.PlayerBMarkerCount--;
                     break;

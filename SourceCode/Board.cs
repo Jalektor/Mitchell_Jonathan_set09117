@@ -12,14 +12,15 @@ namespace CheckersGame
         #region variables
         // array to create board values
         // restricted 
-        private string[] tiles = {"0","    ","A2 X","    ","A4 X","    ","A6 X","    ","A8 X",
-                                      "B1 X","    ","B3 X","    ","B5 X","    ","B7 X","    ",
-                                      "    ","C2 X","    ","C4 X","    ","C6 X","    ","C8 X",
-                                      "D1  ","    ","D3  ","    ","D5  ","    ","D7  ","    ",
-                                      "    ","E2  ","    ","E4  ","    ","E6  ","    ","E8  ",
-                                      "F1 O","    ","F3 O","    ","F5 O","    ","F7 O","    ",
-                                      "    ","G2 O","    ","G4 O","    ","G6 O","    ","G8 O",
-                                      "H1 O","    ","H3 O","    ","H5 O","    ","H7 O","    ",};
+        private string[] tiles = {"0","     ","A2  X","     ","A4  X","     ","A6  X","     ","A8  X",
+                                      "B1  X","     ","B3  X","     ","B5  X","     ","B7  X","     ",
+                                      "     ","C2  X","     ","C4 X ","     ","C6  X","     ","C8  X",
+                                      "D1   ","     ","D3   ","     ","D5   ","     ","D7   ","     ",
+                                      "     ","E2   ","     ","E4   ","     ","E6   ","     ","E8   ",
+                                      "F1  O","     ","F3  O","     ","F5  O","     ","F7  O","     ",
+                                      "     ","G2  O","     ","G4  O","     ","G6  O","     ","G8  O",
+                                      "H1  O","     ","H3  O","     ","H5  O","     ","H7  O","     ",};
+
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
         // Keeps do while loop going ATM. Will change later
@@ -30,20 +31,13 @@ namespace CheckersGame
         // choice is the chosen markers current location
         // destination is where it is to go
         // after input has been sent to changed to upperCase
-        // newDest to store new destination, based on where marker is moving too &/or an enemy marker is being captured
         private string input;
         private string choice;   
         private string destination;
-        private string newDest;
-        private string left;
-        private string right;
 
         public string Input { get { return input; } set { input = value; } }
         public string Choice { get { return choice; } set { choice = value; } }
         public string Destination { get { return destination; } set { destination = value; } }
-        public string NewDest { get { return newDest; } set { newDest = value; } }
-        public string Left { get { return left; } set { left = value; } }
-        public string Right { get { return right; } set { right = value; } }
 
 
         // converts above string inputs into char array
@@ -53,32 +47,6 @@ namespace CheckersGame
 
         public char[] Startcoord { get { return startcoord; } set { startcoord = value; } }
         public char[] Endcoord { get { return endcoord; } set { endcoord = value; } }
-
-        // char array used to compare the above char arrays
-        // so as to prevent backwards movements
-        // and possibly make sure only diagonal movement forward
-        private char[] letter = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
-
-        public char[] Letter { get { return letter; } set { letter = value; } }
-
-        // Char array to check position of number new player marker destination
-        // AFTER they attempt to take an enemy marker
-        // And Then used with above char array to create a new tile destination for player marker
-        private char[] number = { '1', '2', '3', '4', '5', '6', '7', '8' };
-
-        public char[] Number { get { return number; } set { number = value; } }
-
-
-        // int variables to compare positions of char[]'s above
-        // based on position of letter in char[] letter
-        // used to prevent backwards movements
-        // possibly restrict forward movement to diagonal
-        private int posC;
-        private int posD;
-
-        public int PosC { get { return posC; } set { posC = value; } }
-        public int PosD { get { return posD; } set { posD = value; } }
-
 
         // takes count of markers left for each player
         // IF either are zero, ends loop
@@ -132,26 +100,25 @@ namespace CheckersGame
                 {
                     // takes user input and sets it to upperCase
                     // in case user wrote in lower case
-                    Console.WriteLine("Player 1 select a counter to move\n");
+                    Console.WriteLine("Player 1 select a piece to move\n");
                     input = Console.ReadLine();
                     choice = input.ToUpper();
                     if(choice == "")
                     {
-                        Console.WriteLine("Please enter a marker position");
+                        Console.WriteLine("Please enter a piece position to move");
                         Console.ReadLine();
                         begin();
                     }
 
                     startcoord = choice.ToCharArray();
-                    Console.WriteLine("Marker exists");
 
-                    Console.WriteLine("Where do you want the marker to go?");
+                    Console.WriteLine("Where do you want the piece to go?");
                     Input = Console.ReadLine();
                     Destination = Input.ToUpper();
 
                     if (Destination == "")
                     {
-                        Console.WriteLine("Please enter a position for your marker to move to");
+                        Console.WriteLine("Please enter a position for your piece to move to");
                         Console.ReadLine();
                         begin();
                     }
@@ -165,29 +132,31 @@ namespace CheckersGame
                     
                     // takes user input and sets it to upperCase
                     // in case user wrote in lower case
-                    Console.WriteLine("Player 2 select a counter to move\n");
+                    Console.WriteLine("Player 2 select a piece to move\n");
                     input = Console.ReadLine();
                     choice = input.ToUpper();
                     if (choice == "")
                     {
-                        Console.WriteLine("Please enter a marker position");
+                        Console.WriteLine("Please enter a piece position to move");
                         Console.ReadLine();
                         begin();
                     }
 
                     startcoord = choice.ToCharArray();
-                    Console.WriteLine("Marker exists");
 
-                    Console.WriteLine("Where do you want the marker to go?");
+                    Console.WriteLine("Where do you want the piece to go?");
                     Input = Console.ReadLine();
                     Destination = Input.ToUpper();
 
                     if (Destination == "")
                     {
-                        Console.WriteLine("Please enter a position for your marker to move to");
+                        Console.WriteLine("Please enter a position for your piece to move to");
                         Console.ReadLine();
                         begin();
                     }
+
+                    Endcoord = Destination.ToCharArray();
+
                     player2.move();
                 }
 
