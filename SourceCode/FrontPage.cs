@@ -36,7 +36,7 @@ namespace CheckersGame
                         break;
 
                     case "3":
-                        Console.WriteLine("Work in Progress");
+                        board.ComputerPlays();
                         break;
 
                     default:

@@ -143,9 +143,6 @@ namespace CheckersGame
 
                                             Console.ReadLine();
 
-                                            board.DisplayData();
-                                            board.createBoard();
-
                                             Console.WriteLine("Marker moved");
                                             Console.WriteLine("Do you want to undo that move? Y/N");
                                             string ans = Console.ReadLine().ToUpper();
@@ -300,7 +297,6 @@ namespace CheckersGame
                     {
                         coordn = Number[i];
                         newN = coordn.ToString();
-
                     }
 
                     NewDest = newL + newN.Trim().ToUpper();

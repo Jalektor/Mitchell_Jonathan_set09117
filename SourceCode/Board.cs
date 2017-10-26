@@ -17,7 +17,7 @@ namespace CheckersGame
                                       "     ","C2  X","     ","C4  X","     ","C6  X","     ","C8  X",
                                       "D1   ","     ","D3   ","     ","D5   ","     ","D7   ","     ",
                                       "     ","E2   ","     ","E4   ","     ","E6   ","     ","E8   ",
-                                      "F1  O","     ","F3   ","     ","F5  O","     ","F7  O","     ",
+                                      "F1  O","     ","F3  O","     ","F5  O","     ","F7  O","     ",
                                       "     ","G2  O","     ","G4  O","     ","G6   ","     ","G8  O",
                                       "H1  O","     ","H3  O","     ","H5  O","     ","H7  O","     " };
 
@@ -65,11 +65,13 @@ namespace CheckersGame
         // object of classes to call on the functions within them
         PlayerA player1; 
         PlayerB player2;
+        Skynet computer;
 
         // variable to control 
         private int gameState = 1;
         #endregion
 
+        int CompCount = 1;
 
         #region Constructor
         // Constructor just to create board
@@ -78,6 +80,23 @@ namespace CheckersGame
         {
             player1 = new PlayerA(this);
             player2 = new PlayerB(this);
+            computer = new Skynet(this);
+        }
+        #endregion
+        #region PvC
+        public void ComputerPlays()
+        {
+            computer.StorePieces();
+            do
+            {
+                createBoard();
+
+                computer.MovePiece();
+            }
+            while (CompCount != 6);
+            Console.WriteLine("Movement Successful. GZ!!!");
+            Console.ReadLine();
+
         }
         #endregion
         #region startsTheGame
