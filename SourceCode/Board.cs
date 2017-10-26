@@ -14,14 +14,15 @@ namespace CheckersGame
         // restricted 
         private string[] tiles = {"0","     ","A2  X","     ","A4  X","     ","A6  X","     ","A8  X",
                                       "B1  X","     ","B3  X","     ","B5  X","     ","B7  X","     ",
-                                      "     ","C2  X","     ","C4 X ","     ","C6  X","     ","C8  X",
+                                      "     ","C2  X","     ","C4  X","     ","C6  X","     ","C8  X",
                                       "D1   ","     ","D3   ","     ","D5   ","     ","D7   ","     ",
                                       "     ","E2   ","     ","E4   ","     ","E6   ","     ","E8   ",
-                                      "F1  O","     ","F3  O","     ","F5  O","     ","F7  O","     ",
-                                      "     ","G2  O","     ","G4  O","     ","G6  O","     ","G8  O",
-                                      "H1  O","     ","H3  O","     ","H5  O","     ","H7  O","     ",};
+                                      "F1  O","     ","F3   ","     ","F5  O","     ","F7  O","     ",
+                                      "     ","G2  O","     ","G4  O","     ","G6   ","     ","G8  O",
+                                      "H1  O","     ","H3  O","     ","H5  O","     ","H7  O","     " };
 
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
+
 
         // Keeps do while loop going ATM. Will change later
         protected int count = 2;
@@ -81,18 +82,10 @@ namespace CheckersGame
         #endregion
         #region startsTheGame
         public void begin()
-        {           
-;
+        {
             do
             {
-                Console.Clear();
-
-                Console.WriteLine("Welcome to Draughts!\n");
-
-                Console.WriteLine("Select Marker by Row then column");
-
-                Console.WriteLine("Player 1 marker count: " + PlayerAMarkerCount);
-                Console.WriteLine("Player 2 marker count: " + PlayerBMarkerCount + "\n\n");
+                DisplayData();
 
                 createBoard();
 
@@ -103,7 +96,9 @@ namespace CheckersGame
                     Console.WriteLine("Player 1 select a piece to move\n");
                     input = Console.ReadLine();
                     choice = input.ToUpper();
-                    if(choice == "")
+
+                    // checks if choice is empty
+                    if (choice == "")
                     {
                         Console.WriteLine("Please enter a piece position to move");
                         Console.ReadLine();
@@ -116,6 +111,7 @@ namespace CheckersGame
                     Input = Console.ReadLine();
                     Destination = Input.ToUpper();
 
+                    //Check is destination is Empty
                     if (Destination == "")
                     {
                         Console.WriteLine("Please enter a position for your piece to move to");
@@ -135,6 +131,8 @@ namespace CheckersGame
                     Console.WriteLine("Player 2 select a piece to move\n");
                     input = Console.ReadLine();
                     choice = input.ToUpper();
+
+                    // checks if choice is empty
                     if (choice == "")
                     {
                         Console.WriteLine("Please enter a piece position to move");
@@ -148,6 +146,7 @@ namespace CheckersGame
                     Input = Console.ReadLine();
                     Destination = Input.ToUpper();
 
+                    //Check is destination is Empty
                     if (Destination == "")
                     {
                         Console.WriteLine("Please enter a position for your piece to move to");
@@ -178,7 +177,19 @@ namespace CheckersGame
             Console.ReadLine();
         }
         #endregion
+        #region DisplaysBoard
+        public void DisplayData()
+        {
+            Console.Clear();
 
+            Console.WriteLine("Welcome to Draughts!\n");
+
+            Console.WriteLine("Select Marker by Row then column");
+
+            Console.WriteLine("Player 1 marker count: " + PlayerAMarkerCount);
+            Console.WriteLine("Player 2 marker count: " + PlayerBMarkerCount + "\n\n");
+        }
+        #endregion
         #region createsBoard
         public void createBoard()
         {
@@ -192,7 +203,7 @@ namespace CheckersGame
             // first Element set as 0, just to fill it up, but board array element starts at tiles[1]
             // NOTE: first console.writeline spacing here irregular but sets up nicely when executing app # OCD
 
-            Console.WriteLine("      1       2        3        4        5        6        7        8");
+            Console.WriteLine("      1         2         3         4         5         6         7         8");
             Console.WriteLine("A [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[1], tiles[2], tiles[3], tiles[4], tiles[5], tiles[6], tiles[7], tiles[8]);
             Console.WriteLine("B [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[9], tiles[10], tiles[11], tiles[12], tiles[13], tiles[14], tiles[15], tiles[16]);
             Console.WriteLine("C [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[17], tiles[18], tiles[19], tiles[20], tiles[21], tiles[22], tiles[23], tiles[24]);
@@ -203,7 +214,7 @@ namespace CheckersGame
             Console.WriteLine("H [ {0} ] [ {1} ] [ {2} ] [ {3} ] [ {4} ] [ {5} ] [ {6} ] [ {7} ]", tiles[57], tiles[58], tiles[59], tiles[60], tiles[61], tiles[62], tiles[63], tiles[64]);
         }
         #endregion
-
+        #region CheckWin
         public int checkWin()
         {
             if (PlayerAMarkerCount == 0 || PlayerBMarkerCount == 0)
@@ -216,5 +227,6 @@ namespace CheckersGame
                 return 1;
             }
         }
+        #endregion
     }
 }

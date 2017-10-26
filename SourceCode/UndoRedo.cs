@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace CheckersGame
 {
-    class Program
+    public class UndoRedo
     {
-        static void Main(string[] args)
-        {
-            FrontPage start = new FrontPage();
-
-            start.Menu();
-        }       
+        public Stack<string[]> undo = new Stack<string[]>();
     }
 }

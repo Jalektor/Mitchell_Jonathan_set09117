@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="Error.cs" />
+    <Compile Include="FrontPage.cs" />
     <Compile Include="Movement.cs" />
     <Compile Include="PlayerA.cs" />
     <Compile Include="PlayerAKing.cs" />
@@ -52,8 +53,9 @@
     <Compile Include="PlayerBKing.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Information.cs" />
     <Compile Include="Skynet.cs" />
-    <Compile Include="Undo.cs" />
+    <Compile Include="UndoRedo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

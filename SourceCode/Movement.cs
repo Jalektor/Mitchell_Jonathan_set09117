@@ -8,6 +8,7 @@ namespace CheckersGame
 {
     public class Movement
     {
+        Board board;
         #region Variables
 
         // newDest to store new destination, based on where marker is moving too &/or an enemy marker is being captured
@@ -59,12 +60,14 @@ namespace CheckersGame
         public string newN = "coord";
         public char coordL;
         public char coordn;
+
+        public string[] TilesUndo { get; set; }
         #endregion
         #region Constructor
         // needed?
-        public Movement()
+        public Movement(Board draughts)
         {
-
+            board = draughts;
         }
         #endregion
 

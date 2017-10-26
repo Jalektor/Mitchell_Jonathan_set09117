@@ -9,6 +9,9 @@ namespace CheckersGame
     public class PlayerAKing : PlayerA
     {
         Board board;
+        UndoRedo Undo = new UndoRedo();
+        Error error = new Error();
+
         private bool fwd;
         private bool back;
             
@@ -22,7 +25,6 @@ namespace CheckersGame
         #endregion
         public void Move()
         {
-            Undo undo = new Undo();
             PlayerB playerbFunction = new PlayerB(board);
 
             for (i = 0; i < board.Tiles.Length; i++)
@@ -47,10 +49,7 @@ namespace CheckersGame
                             // prevents sideways movement
                             if (board.Endcoord[0] == board.Startcoord[0])
                             {
-                                Console.WriteLine("That move is not possible");
-                                Console.WriteLine("Markers cannot move Sideways");
-                                Console.WriteLine("The counters can only move forward Diagonally");
-                                Console.ReadLine();
+                                error.NoSidewaysMove();
                                 break;
                             }
                             #region backwardsMoveCheck
@@ -67,43 +66,108 @@ namespace CheckersGame
                                     #region enemyCapture
                                     if (board.Tiles[x].Contains("O"))
                                     {
+                                        Array.Copy(board.Tiles, TilesUndo, board.Tiles.Length);
+                                        Undo.undo.Push(TilesUndo);
+
                                         captureMarker();
 
-                                        //// Might change this to a function later. Repeated XD
-                                        //Console.Clear();
+                                        board.DisplayData();
+                                        board.createBoard();
 
-                                        //Console.WriteLine("Welcome to Draughts! test\n");
+                                        Console.WriteLine("Do you want to undo this move? PlayerA Y/N");
+                                        string ans = Console.ReadLine().ToUpper();
+                                        if (ans == "Y")
+                                        {
+                                            Console.WriteLine("Undoing move");
+                                            board.Tiles = Undo.undo.Pop();
+                                            Console.ReadLine();
+                                        }
+                                        else
+                                        {
+                                            board.Player++;
+                                            // sets new choice position
+                                            // finds the fwd diag coords of new choice location
+                                            // searches for them and if they contain enemy marker performs second marker takeover function
+                                            // May consider doing this three deep?????
+                                            board.Choice = NewDest;
+                                            board.Startcoord = board.Choice.ToCharArray();
+                                            if (fwd == true)
+                                            {
+                                                Left = getPositionFWDLeft();
+                                                Right = getPositionFWDRight();
+                                                for (y = 0; y < board.Tiles.Length; y++)
+                                                {
+                                                    if (board.Tiles[y].Contains(Left))
+                                                    {
+                                                        if (board.Tiles[y].Contains("O"))
+                                                        {
+                                                            board.Destination = Left;
+                                                            board.Endcoord = board.Destination.ToCharArray();
+                                                            captureMarker2();
+                                                        }
+                                                    }
+                                                    if (board.Tiles[y].Contains(Right))
+                                                    {
+                                                        if (board.Tiles[y].Contains("O"))
+                                                        {
+                                                            board.Destination = Right;
+                                                            board.Endcoord = board.Destination.ToCharArray();
+                                                            captureMarker2();
+                                                        }
 
-                                        //Console.WriteLine("Select Marker by Row then column");
+                                                    }
+                                                }
+                                                Console.ReadLine();
+                                            }
+                                            if (back == true)
+                                            {
+                                                Left = playerbFunction.getPositionFWDLeft();
+                                                Right = playerbFunction.getPositionFWDRight();
+                                                for (y = 0; y < board.Tiles.Length; y++)
+                                                {
+                                                    if (board.Tiles[y].Contains(Left))
+                                                    {
+                                                        if (board.Tiles[y].Contains("O"))
+                                                        {
+                                                            board.Destination = Left;
+                                                            board.Endcoord = board.Destination.ToCharArray();
+                                                            captureMarker2();
+                                                        }
+                                                    }
+                                                    if (board.Tiles[y].Contains(Right))
+                                                    {
+                                                        if (board.Tiles[y].Contains("O"))
+                                                        {
+                                                            board.Destination = Right;
+                                                            board.Endcoord = board.Destination.ToCharArray();
+                                                            captureMarker2();
+                                                        }
 
-                                        //Console.WriteLine("Player 1 marker count: " + board.PlayerAMarkerCount);
-                                        //Console.WriteLine("Player 2 marker count: " + board.PlayerBMarkerCount + "\n\n");
-
-                                        //board.createBoard();
+                                                    }
+                                                }
+                                                Console.ReadLine();
+                                            }
+                                        }                                       
                                     }
                                     #endregion
                                     else
                                     {
-                                        board.Tiles[x] = board.Destination + " KX";
-                                        board.Tiles[i] = board.Choice + "   ";
+                                        Array.Copy(board.Tiles, TilesUndo, board.Tiles.Length);
+                                        Undo.undo.Push(TilesUndo);
 
-                                        undo.startCoord.Push(board.Choice);
-                                        undo.endCoord.Push(board.Destination);
                                         Console.ReadLine();
 
-                                        Console.WriteLine("Marker moved");
+                                        board.DisplayData();
+                                        board.createBoard();
 
+                                        Console.WriteLine("Marker moved");
                                         Console.WriteLine("Do you want to undo this move? yar Y/N");
                                         string ans = Console.ReadLine().ToUpper();
                                         if (ans == "Y")
                                         {
-                                            board.Choice = undo.startCoord.Pop();
-                                            board.Destination = undo.endCoord.Pop();
-
-                                            board.Tiles[i] = board.Choice + " KX";
-                                            board.Tiles[x] = board.Destination + "   ";
+                                            Console.WriteLine("Undoing move");
+                                            board.Tiles = Undo.undo.Pop();
                                             Console.ReadLine();
-                                            board.begin();
                                         }
                                         else
                                         {
@@ -115,10 +179,7 @@ namespace CheckersGame
                                 }
                                 else
                                 {
-                                    Console.WriteLine("That move is not possible\n");
-                                    Console.WriteLine("Markers can only move Backwards one row and diagonally\n");
-                                    Console.WriteLine("Or move forwards one row diagonally");
-                                    Console.ReadLine();
+                                    error.KingNoBackMove();
                                     break;
                                 }
                             }
@@ -129,8 +190,7 @@ namespace CheckersGame
                         // flags up error if the destination coord is not in array
                         if (x == board.Tiles.Length - 1)
                         {
-                            Console.WriteLine("Marker destination is illegal or already has a player counter on it");
-                            Console.ReadLine();
+                            error.WrongDestCoord();
                             break;
                         }
                     }
@@ -140,8 +200,7 @@ namespace CheckersGame
                 // flags up error if the type coord is not in array
                 if (i == board.Tiles.Length - 1)
                 {
-                    Console.WriteLine("No player counter on selected position\n");
-                    Console.ReadLine();
+                    error.NoPlayerCounter();
                     break;
                 }
             }          
@@ -151,7 +210,7 @@ namespace CheckersGame
         {
             PlayerB playerbFunction = new PlayerB(board);
 
-            Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
+            Console.WriteLine("Enemy Marker present in destination\nAttempting capture");
             if(fwd == true)
             {
                 NewDest = checkEnemyMoveToCapture();
@@ -181,15 +240,55 @@ namespace CheckersGame
 
                     Console.WriteLine("Marker moved");
 
-                    board.Player++;
                     board.PlayerBMarkerCount--;
                     Console.ReadLine();
                     break;
                 }
                 if (d == board.Tiles.Length - 1)
                 {
-                    Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
+                    error.NoCapture();
+                }
+            }
+        }
+        #endregion
+        #region CaptureSecondMarker
+        public override void captureMarker2()
+        {
+            PlayerB playerbFunction = new PlayerB(board);
+
+            Console.WriteLine("Enemy Marker present in destination\nAttempting capture");
+            if (fwd == true)
+            {
+                NewDest = checkEnemyMoveToCapture();
+            }
+            if (back == true)
+            {
+                NewDest = playerbFunction.checkEnemyMoveToCapture();
+            }
+            Console.WriteLine(NewDest);
+            Console.ReadLine();
+
+            for (z = 0; z < board.Tiles.Length; z++)
+            {
+                if (board.Tiles[z].Contains(NewDest) && !board.Tiles[z].Contains("X") && !board.Tiles[z].Contains("O"))
+                { 
+                    // enemy marker location changes to destination name with "0" replaced with "  "
+                    board.Tiles[y] = board.Destination + "   ";
+
+                    // new destination of player marker
+                    board.Tiles[z] = NewDest + " KX";
+
+                    // original poistion of marker has the "X" replaced with "  "
+                    board.Tiles[d] = board.Choice + "   ";
+
+                    Console.WriteLine("Marker moved");
                     Console.ReadLine();
+                    board.PlayerBMarkerCount--;
+                    break;
+                }
+                if (z == board.Tiles.Length - 1)
+                {
+                    error.NoCapture();
                 }
             }
         }
