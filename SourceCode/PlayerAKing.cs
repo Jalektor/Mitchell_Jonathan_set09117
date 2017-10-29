@@ -18,13 +18,13 @@ namespace CheckersGame
         #region Constructor
         public PlayerAKing(Board draughts) : base(draughts)
         {
-            board = draughts;
-            
+            board = draughts;          
         }
         
         #endregion
-        public void Move()
+        public void Move(string Opponent)
         {
+            TilesUndo = new string[board.Tiles.Length];
             PlayerB playerbFunction = new PlayerB(board);
 
             for (i = 0; i < board.Tiles.Length; i++)
@@ -69,7 +69,7 @@ namespace CheckersGame
                                         Array.Copy(board.Tiles, TilesUndo, board.Tiles.Length);
                                         Undo.undo.Push(TilesUndo);
 
-                                        captureMarker();
+                                        captureMarker(Opponent);
 
                                         board.DisplayData();
                                         board.createBoard();
@@ -103,7 +103,7 @@ namespace CheckersGame
                                                         {
                                                             board.Destination = Left;
                                                             board.Endcoord = board.Destination.ToCharArray();
-                                                            captureMarker2();
+                                                            captureMarker2(Opponent);
                                                         }
                                                     }
                                                     if (board.Tiles[y].Contains(Right))
@@ -112,7 +112,7 @@ namespace CheckersGame
                                                         {
                                                             board.Destination = Right;
                                                             board.Endcoord = board.Destination.ToCharArray();
-                                                            captureMarker2();
+                                                            captureMarker2(Opponent);
                                                         }
 
                                                     }
@@ -131,7 +131,7 @@ namespace CheckersGame
                                                         {
                                                             board.Destination = Left;
                                                             board.Endcoord = board.Destination.ToCharArray();
-                                                            captureMarker2();
+                                                            captureMarker2(Opponent);
                                                         }
                                                     }
                                                     if (board.Tiles[y].Contains(Right))
@@ -140,7 +140,7 @@ namespace CheckersGame
                                                         {
                                                             board.Destination = Right;
                                                             board.Endcoord = board.Destination.ToCharArray();
-                                                            captureMarker2();
+                                                            captureMarker2(Opponent);
                                                         }
 
                                                     }
@@ -206,8 +206,9 @@ namespace CheckersGame
             }          
         } 
         #region captureEnemyMarker1
-        public override void captureMarker()
+        public override void captureMarker(string Opponent)
         {
+            Skynet Comp = board.Computer;
             PlayerB playerbFunction = new PlayerB(board);
 
             Console.WriteLine("Enemy Marker present in destination\nAttempting capture");
@@ -229,17 +230,18 @@ namespace CheckersGame
             {
                 if (board.Tiles[d].Contains(NewDest) && !board.Tiles[d].Contains("X") && !board.Tiles[d].Contains("O"))
                 {
-                        // enemy marker location changes to destination name with "0" replaced with "  "
-                        board.Tiles[x] = board.Destination + "   ";
+                    // enemy marker location changes to destination name with "0" replaced with "  "
+                    board.Tiles[x] = board.Destination + "   ";
 
-                        // new destination of player marker
-                        board.Tiles[d] = NewDest + " KX";
+                    // new destination of player marker
+                    board.Tiles[d] = NewDest + " KX";
 
-                        // original poistion of marker has the "X" replaced with "  "
-                        board.Tiles[i] = board.Choice + "   ";
-
-                    Console.WriteLine("Marker moved");
-
+                    // original poistion of marker has the "X" replaced with "  "
+                    board.Tiles[i] = board.Choice + "   ";
+                    if (Opponent == "C")
+                        {
+                            Comp.RemoveTakenPiece(board.Destination);
+                        }
                     board.PlayerBMarkerCount--;
                     Console.ReadLine();
                     break;
@@ -252,8 +254,9 @@ namespace CheckersGame
         }
         #endregion
         #region CaptureSecondMarker
-        public override void captureMarker2()
+        public override void captureMarker2(string Opponent)
         {
+            Skynet Comp = board.Computer;
             PlayerB playerbFunction = new PlayerB(board);
 
             Console.WriteLine("Enemy Marker present in destination\nAttempting capture");
@@ -281,7 +284,10 @@ namespace CheckersGame
                     // original poistion of marker has the "X" replaced with "  "
                     board.Tiles[d] = board.Choice + "   ";
 
-                    Console.WriteLine("Marker moved");
+                    if (Opponent == "C")
+                    {
+                        Comp.RemoveTakenPiece(board.Destination);
+                    }
                     Console.ReadLine();
                     board.PlayerBMarkerCount--;
                     break;

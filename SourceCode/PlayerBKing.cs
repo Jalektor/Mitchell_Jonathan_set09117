@@ -24,6 +24,7 @@ namespace CheckersGame
         #endregion
         public void Move()
         {
+            TilesUndo = new string[board.Tiles.Length];
             PlayerA playeraFunction = new PlayerA(board);
 
             for (i = 0; i < board.Tiles.Length; i++)

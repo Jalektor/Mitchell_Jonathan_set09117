@@ -22,21 +22,25 @@ namespace CheckersGame
                 "Select one of the following options:\n" +
                 "1. Rules\n" +
                 "2. Player vs Player\n" +
-                "3. Player vs Computer");
+                "3. Player vs Computer\n" +
+                "4. Exit Aplication");
 
-                string option = Console.ReadLine();
+                int option = int.Parse(Console.ReadLine());
                 switch (option)
                 {
-                    case "1":
+                    case 1:
                         info.Rules();
                         break;
 
-                    case "2":
-                        board.begin();
+                    case 2:
+                        board.PvP();
                         break;
 
-                    case "3":
-                        board.ComputerPlays();
+                    case 3:
+                        board.PvC();
+                        break;
+                    case 4:
+                        Environment.Exit(0);
                         break;
 
                     default:

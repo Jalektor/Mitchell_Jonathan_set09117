@@ -21,11 +21,10 @@ namespace CheckersGame
         }
         #endregion
 
-        public void move()
+        public void move(string Opponent)
         {
             TilesUndo = new string[board.Tiles.Length];
             PlayerAKing king = new PlayerAKing(board);
-
             #region playerOneMove
             // checks array for chosen marker coord
             for (i = 0; i < board.Tiles.Length; i++)
@@ -34,7 +33,7 @@ namespace CheckersGame
                 {
                     if(board.Tiles[i].Contains("K"))
                     {
-                        king.Move();
+                        king.Move(Opponent);
                         break;
                     }
                     #region destinationcoords
@@ -82,7 +81,7 @@ namespace CheckersGame
                                             Array.Copy(board.Tiles, TilesUndo, board.Tiles.Length);
                                             Undo.undo.Push(TilesUndo);
 
-                                            captureMarker();
+                                            captureMarker(Opponent);
 
                                             board.DisplayData();
                                             board.createBoard();
@@ -112,13 +111,13 @@ namespace CheckersGame
                                                     {
                                                         board.Destination = Left;
                                                         board.Endcoord = board.Destination.ToCharArray();
-                                                        captureMarker2();                                            
+                                                        captureMarker2(Opponent);                                            
                                                     }
                                                     if (board.Tiles[y].Contains(Right) && board.Tiles[y].Contains("O"))
                                                     {
                                                         board.Destination = Right;
                                                         board.Endcoord = board.Destination.ToCharArray();
-                                                        captureMarker2();                                                       
+                                                        captureMarker2(Opponent);                                                       
                                                     }
                                                 }
                                                 Console.ReadLine();
@@ -348,8 +347,9 @@ namespace CheckersGame
         }
         #endregion
         #region captureEnemyMarker1
-        public virtual void captureMarker()
+        public virtual void captureMarker(string Opponent)
         {
+            Skynet Comp = board.Computer;
             Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
 
             NewDest = checkEnemyMoveToCapture();
@@ -370,6 +370,10 @@ namespace CheckersGame
 
                         // original poistion of marker has the "X" replaced with "  "
                         board.Tiles[i] = board.Choice + "   ";
+                        if (Opponent == "C")
+                        {
+                            Comp.RemoveTakenPiece(board.Destination);
+                        }
                     }
                     else
                     {
@@ -381,8 +385,13 @@ namespace CheckersGame
 
                         // original poistion of marker has the "X" replaced with "  "
                         board.Tiles[i] = board.Choice + "   ";
-                    }
-                    
+
+                        if (Opponent == "C")
+                        {
+                            string PieceToRemove = board.Destination;
+                            Comp.RemoveTakenPiece(PieceToRemove);
+                        }
+                    }       
                     Console.WriteLine("Marker moved");
 
                     board.PlayerBMarkerCount--;
@@ -441,8 +450,9 @@ namespace CheckersGame
         // checks where in array postion newDest is
         // and changes the string contents based on what element in tiles is being amended
         // This only f there is a second marker present
-        public virtual void captureMarker2()
+        public virtual void captureMarker2(string Opponent)
         {
+            Skynet Comp = board.Computer;
             Console.WriteLine("Enemy piece present in next space\nAttempting capture");
 
             NewDest = checkEnemyMoveToCapture();
@@ -461,6 +471,11 @@ namespace CheckersGame
 
                         // original poistion of marker has the "X" replaced with "  "
                         board.Tiles[d] = board.Choice + "   ";
+                        if (Opponent == "C")
+                        {
+                            string PieceToRemove = board.Destination;
+                            Comp.RemoveTakenPiece(PieceToRemove);
+                        }
                     }
                     else
                     {
@@ -472,6 +487,11 @@ namespace CheckersGame
 
                         // original poistion of marker has the "X" replaced with "  "
                         board.Tiles[d] = board.Choice + "   ";
+                        if (Opponent == "C")
+                        {
+                            string PieceToRemove = board.Destination;
+                            Comp.RemoveTakenPiece(PieceToRemove);
+                        }
                     }
                     
                     Console.WriteLine("Marker moved");

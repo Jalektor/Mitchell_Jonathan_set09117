@@ -15,10 +15,10 @@ namespace CheckersGame
         private string[] tiles = {"0","     ","A2  X","     ","A4  X","     ","A6  X","     ","A8  X",
                                       "B1  X","     ","B3  X","     ","B5  X","     ","B7  X","     ",
                                       "     ","C2  X","     ","C4  X","     ","C6  X","     ","C8  X",
-                                      "D1   ","     ","D3   ","     ","D5   ","     ","D7   ","     ",
-                                      "     ","E2   ","     ","E4   ","     ","E6   ","     ","E8   ",
-                                      "F1  O","     ","F3  O","     ","F5  O","     ","F7  O","     ",
-                                      "     ","G2  O","     ","G4  O","     ","G6   ","     ","G8  O",
+                                      "D1  X","     ","D3  X","     ","D5   ","     ","D7   ","     ",
+                                      "     ","E2  O","     ","E4   ","     ","E6   ","     ","E8   ",
+                                      "F1   ","     ","F3  O","     ","F5  O","     ","F7  O","     ",
+                                      "     ","G2  O","     ","G4  O","     ","G6  O","     ","G8  O",
                                       "H1  O","     ","H3  O","     ","H5  O","     ","H7  O","     " };
 
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
@@ -33,7 +33,7 @@ namespace CheckersGame
         // destination is where it is to go
         // after input has been sent to changed to upperCase
         private string input;
-        private string choice;   
+        private string choice;
         private string destination;
 
         public string Input { get { return input; } set { input = value; } }
@@ -62,17 +62,20 @@ namespace CheckersGame
 
         public int Player { get { return player; } set { player = value; } }
 
+        private string opponent;
+
+        public string Opponent { get { return opponent; } set { opponent = value; } }
+
         // object of classes to call on the functions within them
-        PlayerA player1; 
+        PlayerA player1;
         PlayerB player2;
-        Skynet computer;
+        private Skynet computer;
+
+        public Skynet Computer { get { return computer; } set { computer = value; } }
 
         // variable to control 
         private int gameState = 1;
         #endregion
-
-        int CompCount = 1;
-
         #region Constructor
         // Constructor just to create board
         // At the moment
@@ -83,99 +86,21 @@ namespace CheckersGame
             computer = new Skynet(this);
         }
         #endregion
-        #region PvC
-        public void ComputerPlays()
-        {
-            computer.StorePieces();
-            do
-            {
-                createBoard();
-
-                computer.MovePiece();
-            }
-            while (CompCount != 6);
-            Console.WriteLine("Movement Successful. GZ!!!");
-            Console.ReadLine();
-
-        }
-        #endregion
-        #region startsTheGame
-        public void begin()
+        #region PlayerVPlayer
+        public void PvP()
         {
             do
             {
-                DisplayData();
-
+                DisplayData();      
                 createBoard();
 
-                if(player == 1)
+                if (Player == 1)
                 {
-                    // takes user input and sets it to upperCase
-                    // in case user wrote in lower case
-                    Console.WriteLine("Player 1 select a piece to move\n");
-                    input = Console.ReadLine();
-                    choice = input.ToUpper();
-
-                    // checks if choice is empty
-                    if (choice == "")
-                    {
-                        Console.WriteLine("Please enter a piece position to move");
-                        Console.ReadLine();
-                        begin();
-                    }
-
-                    startcoord = choice.ToCharArray();
-
-                    Console.WriteLine("Where do you want the piece to go?");
-                    Input = Console.ReadLine();
-                    Destination = Input.ToUpper();
-
-                    //Check is destination is Empty
-                    if (Destination == "")
-                    {
-                        Console.WriteLine("Please enter a position for your piece to move to");
-                        Console.ReadLine();
-                        begin();
-                    }
-
-                    Endcoord = Destination.ToCharArray();
-
-                    player1.move();
+                    PlayerAStart();
                 }
                 else
                 {
-                    
-                    // takes user input and sets it to upperCase
-                    // in case user wrote in lower case
-                    Console.WriteLine("Player 2 select a piece to move\n");
-                    input = Console.ReadLine();
-                    choice = input.ToUpper();
-
-                    // checks if choice is empty
-                    if (choice == "")
-                    {
-                        Console.WriteLine("Please enter a piece position to move");
-                        Console.ReadLine();
-                        begin();
-                    }
-
-                    startcoord = choice.ToCharArray();
-
-                    Console.WriteLine("Where do you want the piece to go?");
-                    Input = Console.ReadLine();
-                    Destination = Input.ToUpper();
-
-                    //Check is destination is Empty
-                    if (Destination == "")
-                    {
-                        Console.WriteLine("Please enter a position for your piece to move to");
-                        Console.ReadLine();
-                        begin();
-                    }
-
-                    Endcoord = Destination.ToCharArray();
-
-                    player2.move();
+                    PlayerBStart();
                 }
 
                 gameState = checkWin();
@@ -185,13 +110,59 @@ namespace CheckersGame
             Console.Clear();
             createBoard();
 
-            if(PlayerAMarkerCount == 0)
+            if (PlayerAMarkerCount == 0)
             {
-                Console.WriteLine("Congratulations Player 2. you have won!\nThanks for playing\nGoodbye");
+                Console.WriteLine("Congratulations Player 2. you have won!\n" +
+                    "Thanks for playing\n" +
+                    "Goodbye/n" +
+                    "Returning to Main Menu");
             }
-            else if(PlayerBMarkerCount == 0)
+            else if (PlayerBMarkerCount == 0)
             {
-                Console.WriteLine("Congratulations Player 1. you have won!\nThanks for playing\nGoodbye");
+                Console.WriteLine("Congratulations Player 1. you have won!\n" +
+                    "Thanks for playing\n" +
+                    "Goodbye\n" +
+                    "Returning to Main Menu");
+            }
+            Console.ReadLine();
+        }
+        #endregion
+        #region PlayerVComputer
+        public void PvC()
+        {
+            computer.StorePieces();
+            do
+            {
+                DisplayData();
+                createBoard();
+                if(Player == 1)
+                {
+                    PlayerAStart();
+                }
+                else
+                {
+                    ComputerPlays();
+                }
+
+                gameState = checkWin();
+            }
+            while (gameState == 1);
+
+            Console.Clear();
+            createBoard();
+            if (PlayerAMarkerCount == 0)
+            {
+                Console.WriteLine("Congratulations The Computer has won!\n" +
+                    "Thanks for playing\n" +
+                    "Goodbye/n" +
+                    "Returning to Main Menu");
+            }
+            else if (PlayerBMarkerCount == 0)
+            {
+                Console.WriteLine("Congratulations! You have Beaten the computer\n" +
+                    "Thanks for playing\n" +
+                    "Goodbye\n" +
+                    "Returning to Main Menu");
             }
             Console.ReadLine();
         }
@@ -239,12 +210,93 @@ namespace CheckersGame
             if (PlayerAMarkerCount == 0 || PlayerBMarkerCount == 0)
             {
                 Console.WriteLine("Game Over");
+                Console.ReadLine();
                 return 0;
             }
             else
             {
                 return 1;
             }
+        }
+        #endregion
+        #region PlayerAStartMove
+        public void PlayerAStart()
+        {
+            // takes user input and sets it to upperCase
+            // in case user wrote in lower case
+            Console.WriteLine("Player 1 select a piece to move\n");
+            input = Console.ReadLine();
+            choice = input.ToUpper();
+
+            // checks if choice is empty
+            if (choice == "")
+            {
+                Console.WriteLine("Please enter a piece position to move");
+                Console.ReadLine();
+                PvP();
+            }
+
+            startcoord = choice.ToCharArray();
+
+            Console.WriteLine("Where do you want the piece to go?");
+            Input = Console.ReadLine();
+            Destination = Input.ToUpper();
+
+            //Check is destination is Empty
+            if (Destination == "")
+            {
+                Console.WriteLine("Please enter a position for your piece to move too");
+                Console.ReadLine();
+                PvP();
+            }
+
+            Endcoord = Destination.ToCharArray();
+
+            Opponent = "C";
+            player1.move(Opponent);       
+            #endregion
+            
+        }
+        #region PlayerBSTartMove();
+        public void PlayerBStart()
+        {
+            // takes user input and sets it to upperCase
+            // in case user wrote in lower case
+            Console.WriteLine("Player 2 select a piece to move\n");
+            input = Console.ReadLine();
+            choice = input.ToUpper();
+
+            // checks if choice is empty
+            if (choice == "")
+            {
+                Console.WriteLine("Please enter a piece position to move");
+                Console.ReadLine();
+                PvP();
+            }
+
+            startcoord = choice.ToCharArray();
+
+            Console.WriteLine("Where do you want the piece to go?");
+            Input = Console.ReadLine();
+            Destination = Input.ToUpper();
+
+            //Check is destination is Empty
+            if (Destination == "")
+            {
+                Console.WriteLine("Please enter a position for your piece to move to");
+                Console.ReadLine();
+                PvP();
+            }
+
+            Endcoord = Destination.ToCharArray();
+
+            player2.move();
+        }
+        #endregion
+        #region ComputerAStart
+        public void ComputerPlays()
+        {
+            computer.MovePiece();
         }
         #endregion
     }

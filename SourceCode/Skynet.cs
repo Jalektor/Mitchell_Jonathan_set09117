@@ -11,24 +11,28 @@ namespace CheckersGame
     // Skynet will rule all
     // Hasta La Vista
 
-    public class Skynet : Movement
+    public class Skynet : PlayerB
     {
+        #region Variables/Objects
         Board board;
-        List<string> PlayerPieces = new List<string>();
+        private List<string> playerPieces = new List<string>();
+
+        public List<string> PlayerPieces { get { return playerPieces; } set { playerPieces = value; } }
 
         private string pieceStart;
         private string pieceEnd;
+        private string destination;
 
         public string PieceStart { get {return pieceStart; } set {pieceStart = value; } }
         public string PieceEnd { get {return pieceEnd; } set {pieceEnd = value; }}
-
+        public string Destination { get { return destination; } set { destination = value; } }
+        #endregion
         #region Constructor
         public Skynet(Board draughts) : base(draughts)
         {
             board = draughts;
         }
         #endregion
-
         #region StoreCompPlayerPieces
         public void StorePieces()
         {
@@ -41,15 +45,17 @@ namespace CheckersGame
                     PlayerPieces.Add(board.Tiles[i]);
                 }
             }
-            PlayerPieces.ForEach(Console.WriteLine);
-            Console.WriteLine("Computer has stored all starting positions for its markers");
+            Console.WriteLine("Computer has stored all starting positions for its markers\n");
             Console.ReadLine();
         }
         #endregion
-
         #region MoveASinglePiece
         public void MovePiece()
         {
+            playerPieces.ForEach(Console.WriteLine);
+            Destination = string.Empty;
+            NewDest = string.Empty;
+
             Console.WriteLine("Computer is moving one of it's pieces");
             Console.ReadLine();
             foreach (string piece in PlayerPieces)
@@ -57,23 +63,41 @@ namespace CheckersGame
                 PieceStart = piece.Split(new string[] { "  "}, StringSplitOptions.None)[0];
                 board.Choice = PieceStart;
                 board.Startcoord = board.Choice.ToCharArray();
-                Console.WriteLine("Start" + PieceStart);
-                Console.ReadLine();
 
                 PieceEnd = GetDestCoord();
                 board.Destination = PieceEnd.Trim();
-                Console.WriteLine("Dest" + PieceEnd);
-                Console.ReadLine();
-                if(!board.Destination.Contains("blank"))
+                if(NewDest.Length != 0)
                 {
+                    Console.WriteLine("Computer captured player piece\n" +
+                        "From {0}\n" +
+                        "To: {1}\n" +
+                        "Capturing: {2}", PieceStart, NewDest, PieceEnd);
+                    Console.ReadLine();
+                    for (int i = 0; i < PlayerPieces.Count; i++)
+                    {
+                        if(PlayerPieces[i].Contains(PieceStart))
+                        {
+                            PlayerPieces.RemoveAt(i);
+                            PlayerPieces.Add(NewDest);
+                            board.PlayerAMarkerCount--;
+                            board.player--;
+                            break;
+                        }
+                    }
+                    break;                   
+                }
+                else if(!PieceEnd.Contains("O") && !PieceEnd.Contains("X"))
+                {
+                    Console.WriteLine("Computer Moving piece\n" +
+                        "From {0}\n" +
+                        "To: {1}", PieceStart, PieceEnd);
+                    Console.ReadLine();
                     for(int i = 0; i < board.Tiles.Length; i++)
                     {
                         board.Tiles[i] = board.Tiles[i].Replace(piece, PieceStart + "   ");
-                    }
-                    for (int i = 0; i < board.Tiles.Length; i++)
-                    {
                         board.Tiles[i] = board.Tiles[i].Replace(PieceEnd, board.Destination + "  O");
                     }
+                        
                     Console.WriteLine("Computer has moved a piece");
                     Console.ReadLine();
 
@@ -83,58 +107,89 @@ namespace CheckersGame
                         {
                             PlayerPieces.RemoveAt(i);
                             PlayerPieces.Add(PieceEnd);
+                            board.player--;
+                            break;
                         }
                     }
-                    PlayerPieces.ForEach(Console.WriteLine);
-                    Console.ReadLine();
-                    board.DisplayData();
-                    board.createBoard();
-                    Console.ReadLine();
-
-                    board.player--;
                     break;
                 }
             }
+            Console.ReadLine();
         }
         #endregion
-
         #region GetDestinationPosition
         public string GetDestCoord()
         {
-            string destination = "Fail";
             string Left = GetLeft(); ;
             string Right = GetRight();
-            Console.WriteLine("Left" + Left + "Right" + Right);
-            Console.ReadLine();
             foreach(string piece in board.Tiles)
             {
                 if(piece.Contains(Left))
                 {
+                    // New issue Here
+                    // Need to get NEW left/right for place AFTER opponent marker
+                    // And check that position
+                    // Similar to playerA/B second marker take
                     PieceEnd = piece;
-                    Console.WriteLine("Left Is:" + PieceEnd);
-                    Console.ReadLine();
                     if(!PieceEnd.Contains("X") && !PieceEnd.Contains("O"))
                     {
-                        destination = piece;
-                    break;
-                    }                   
+                        Destination = piece;
+                        break;
+                    }        
+                    if(PieceEnd.Contains("X"))
+                    {
+                        Destination = piece;
+                        board.Destination = Destination;
+                        board.Endcoord = piece.ToCharArray();
+                        NewDest = checkEnemyMoveToCapture();
+                        if(!NewDest.Contains("coord"))
+                        {
+                            AddToNewDest(NewDest);
+                            if (!NewDest.Contains("X") && !NewDest.Contains("O"))
+                            {
+                                captureMarker();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
-                if(piece.Contains(Right))
+                else if(piece.Contains(Right))
                 {
                     PieceEnd = piece;
-                    Console.WriteLine("Right Is:" + PieceEnd);
-                    Console.ReadLine();
                     if (!PieceEnd.Contains("X") && !PieceEnd.Contains("O"))
                     {
-                        destination = piece;
+                        Destination = piece;
                         break;
+                    }
+                    if (PieceEnd.Contains("X"))
+                    {
+                        Destination = PieceEnd;
+                        board.Destination = Destination;
+                        board.Endcoord = piece.ToCharArray();
+                        NewDest = checkEnemyMoveToCapture();
+                        if (!NewDest.Contains("coord"))
+                        {
+                            AddToNewDest(NewDest);
+                            if (!NewDest.Contains("X") && !NewDest.Contains("O"))
+                            {
+                                captureMarker();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }
-            return destination;
+            return Destination;
         }
         #endregion
-
         #region PossibleLeftDest
         public string GetLeft()
         {
@@ -153,12 +208,9 @@ namespace CheckersGame
                 }
                 Left = newL + newN.Trim().ToUpper();                  
             }
-            Console.WriteLine("Got Left" + Left);
-            Console.ReadLine();
             return Left;        
         }
         #endregion
-
         #region PossibleRightDest
         public string GetRight()
         {
@@ -177,9 +229,65 @@ namespace CheckersGame
                 }
                 Right = newL + newN.Trim().ToUpper();
             }
-            Console.WriteLine("Got Right" + Right);
-            Console.ReadLine();
             return Right;
+        }
+        #endregion
+        #region CaptureEnemyPiece1
+        public override void captureMarker()
+        {
+            Console.WriteLine("Computer attempting to take player Piece");
+            Console.ReadLine();
+            foreach (string piece in board.Tiles)
+            {
+                if(piece.Contains(NewDest) && !piece.Contains("X") && !piece.Contains("O"))
+                {
+                    for(int i = 0; i < board.Tiles.Length; i++)
+                    {
+                        if(board.Tiles[i].Contains(PieceStart))
+                        {
+                            board.Tiles[i] = board.Tiles[i].Replace(board.Tiles[i], PieceStart + "   ");
+                        }
+                        if(board.Tiles[i].Contains(PieceEnd))
+                        {
+                            Destination = Destination.Replace("  X", "");
+                            board.Tiles[i] = board.Tiles[i].Replace(board.Tiles[i], Destination + "   ");
+                        }
+                        if(board.Tiles[i].Contains(NewDest))
+                        {
+                            board.Tiles[i] = board.Tiles[i].Replace(board.Tiles[i], NewDest + "  O");
+                        }
+                    }
+                    Console.ReadLine();
+                    break;
+                }
+            }
+        }
+        #endregion
+        #region RemovePiece
+        public void RemoveTakenPiece(string PieceToRemove)
+        {
+            PieceStart = PieceToRemove;
+            Console.ReadLine();
+            for (int i = 0; i < PlayerPieces.Count; i++)
+            {
+                if (PlayerPieces[i].Contains(PieceStart))
+                {
+                    PlayerPieces.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+        #endregion
+        #region AddToNewDest
+        public void AddToNewDest(string NewDest)
+        {
+            foreach(string piece in board.Tiles)
+            {
+                if(piece.Contains(NewDest))
+                {
+                    NewDest = piece;
+                }
+            }
         }
         #endregion
     }
