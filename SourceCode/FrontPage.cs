@@ -25,30 +25,40 @@ namespace CheckersGame
                 "3. Player vs Computer\n" +
                 "4. Exit Aplication");
 
-                int option = int.Parse(Console.ReadLine());
-                switch (option)
+                try
                 {
-                    case 1:
-                        info.Rules();
-                        break;
+                    int option = int.Parse(Console.ReadLine());
 
-                    case 2:
-                        board.PvP();
-                        break;
+                    switch (option)
+                    {
+                        case 1:
+                            info.Rules();
+                            break;
 
-                    case 3:
-                        board.PvC();
-                        break;
-                    case 4:
-                        Environment.Exit(0);
-                        break;
+                        case 2:
+                            board.PvP();
+                            break;
 
-                    default:
+                        case 3:
+                            board.PvC();
+                            break;
+                        case 4:
+                            Environment.Exit(0);
+                            break;
 
-                        Console.WriteLine("Please Select One of the above options!");
-                        Console.ReadLine();
-                        break;
+                        default:
+
+                            Console.WriteLine("Please Select One of the above options!");
+                            Console.ReadLine();
+                            break;
+                    }
                 }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Please Select one of the above options!");
+                    Console.ReadLine();
+                }
+                               
             }                   
                 
             

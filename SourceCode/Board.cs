@@ -15,9 +15,9 @@ namespace CheckersGame
         private string[] tiles = {"0","     ","A2  X","     ","A4  X","     ","A6  X","     ","A8  X",
                                       "B1  X","     ","B3  X","     ","B5  X","     ","B7  X","     ",
                                       "     ","C2  X","     ","C4  X","     ","C6  X","     ","C8  X",
-                                      "D1  X","     ","D3  X","     ","D5   ","     ","D7   ","     ",
-                                      "     ","E2  O","     ","E4   ","     ","E6   ","     ","E8   ",
-                                      "F1   ","     ","F3  O","     ","F5  O","     ","F7  O","     ",
+                                      "D1   ","     ","D3   ","     ","D5   ","     ","D7   ","     ",
+                                      "     ","E2   ","     ","E4   ","     ","E6   ","     ","E8   ",
+                                      "F1  O","     ","F3  O","     ","F5  O","     ","F7  O","     ",
                                       "     ","G2  O","     ","G4  O","     ","G6  O","     ","G8  O",
                                       "H1  O","     ","H3  O","     ","H5  O","     ","H7  O","     " };
 
@@ -67,11 +67,11 @@ namespace CheckersGame
         public string Opponent { get { return opponent; } set { opponent = value; } }
 
         // object of classes to call on the functions within them
-        PlayerA player1;
-        PlayerB player2;
-        private Skynet computer;
-
-        public Skynet Computer { get { return computer; } set { computer = value; } }
+        Movement player1;
+        Movement player2;
+        public Movement playerAKing;
+        public Movement playerBKing;
+        public Skynet computer;
 
         // variable to control 
         private int gameState = 1;
@@ -81,14 +81,17 @@ namespace CheckersGame
         // At the moment
         public Board()
         {
+            computer = new Skynet(this);
             player1 = new PlayerA(this);
             player2 = new PlayerB(this);
-            computer = new Skynet(this);
+            playerAKing = new PlayerAKing(this);
+            playerBKing = new PlayerBKing(this);
         }
         #endregion
         #region PlayerVPlayer
         public void PvP()
         {
+            Opponent = string.Empty;
             do
             {
                 DisplayData();      
@@ -130,6 +133,7 @@ namespace CheckersGame
         #region PlayerVComputer
         public void PvC()
         {
+            Opponent = "C";
             computer.StorePieces();
             do
             {
@@ -252,7 +256,6 @@ namespace CheckersGame
 
             Endcoord = Destination.ToCharArray();
 
-            Opponent = "C";
             player1.move(Opponent);       
             #endregion
             
@@ -290,7 +293,7 @@ namespace CheckersGame
 
             Endcoord = Destination.ToCharArray();
 
-            player2.move();
+            player2.move(null);
         }
         #endregion
         #region ComputerAStart

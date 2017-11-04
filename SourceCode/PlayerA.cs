@@ -11,6 +11,7 @@ namespace CheckersGame
     public class PlayerA : Movement
     {
         Board board;
+        Skynet Comp;
         UndoRedo Undo = new UndoRedo();
         Error error = new Error();
 
@@ -18,22 +19,22 @@ namespace CheckersGame
         public PlayerA(Board draughts) : base(draughts)
         {
             board = draughts;
+            Comp = board.computer;
         }
         #endregion
-
-        public void move(string Opponent)
+        public override void move(string Opponent)
         {
             TilesUndo = new string[board.Tiles.Length];
-            PlayerAKing king = new PlayerAKing(board);
+            //PlayerAKing king = new PlayerAKing(board);
             #region playerOneMove
             // checks array for chosen marker coord
             for (i = 0; i < board.Tiles.Length; i++)
             {
                 if (board.Tiles[i].Contains(board.Choice) && board.Tiles[i].Contains("X"))
                 {
-                    if(board.Tiles[i].Contains("K"))
+                    if (board.Tiles[i].Contains("K"))
                     {
-                        king.Move(Opponent);
+                        board.playerAKing.move(Opponent);
                         break;
                     }
                     #region destinationcoords
@@ -349,7 +350,6 @@ namespace CheckersGame
         #region captureEnemyMarker1
         public virtual void captureMarker(string Opponent)
         {
-            Skynet Comp = board.Computer;
             Console.WriteLine("Enemy Marker present in destination\nYou must capture it");
 
             NewDest = checkEnemyMoveToCapture();
@@ -452,7 +452,7 @@ namespace CheckersGame
         // This only f there is a second marker present
         public virtual void captureMarker2(string Opponent)
         {
-            Skynet Comp = board.Computer;
+            Skynet Comp = board.computer;
             Console.WriteLine("Enemy piece present in next space\nAttempting capture");
 
             NewDest = checkEnemyMoveToCapture();

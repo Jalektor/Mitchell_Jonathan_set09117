@@ -18,7 +18,8 @@ namespace CheckersGame
             board = draughts;
         }
         #endregion
-        public void move()
+
+        public override void move(string Opponent)
         {
             TilesUndo = new string[board.Tiles.Length];
             PlayerBKing king = new PlayerBKing(board);
@@ -114,7 +115,7 @@ namespace CheckersGame
                                                         captureMarker2();
                                                         
                                                     }
-                                                    if (board.Tiles[y].Contains(Right) && board.Tiles[y].Contains("X"))
+                                                    else if (board.Tiles[y].Contains(Right) && board.Tiles[y].Contains("X"))
                                                     {
                                                         board.Destination = Right;
                                                         board.Endcoord = board.Destination.ToCharArray();
@@ -281,7 +282,7 @@ namespace CheckersGame
         // when the number coord is the same as number[i] +/- 1
         // stores numer[i] in variables
         // string returns combined tostring of above variables
-        public string checkEnemyMoveToCapture()
+        public virtual string checkEnemyMoveToCapture()
         {
             // checks if enemy marker is left diagonal fwd to start coord
             if (board.Endcoord[1] < board.Startcoord[1])
@@ -316,6 +317,8 @@ namespace CheckersGame
                     {
                         coordn = Number[i];
                         newN = coordn.ToString();
+                        Console.WriteLine("newN: " + newN);
+                        Console.ReadLine();
 
                     }
 

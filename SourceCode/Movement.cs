@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CheckersGame
 {
-    public class Movement
+    public abstract class Movement
     {
         Board board;
         #region Variables
@@ -70,6 +70,7 @@ namespace CheckersGame
             board = draughts;
         }
         #endregion
+        public abstract void move(string Opponent);
 
     }
 }

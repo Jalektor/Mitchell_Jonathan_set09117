@@ -22,7 +22,7 @@ namespace CheckersGame
         }
         
         #endregion
-        public void Move(string Opponent)
+        public override void move(string Opponent)
         {
             TilesUndo = new string[board.Tiles.Length];
             PlayerB playerbFunction = new PlayerB(board);
@@ -208,7 +208,7 @@ namespace CheckersGame
         #region captureEnemyMarker1
         public override void captureMarker(string Opponent)
         {
-            Skynet Comp = board.Computer;
+            Skynet Comp = board.computer;
             PlayerB playerbFunction = new PlayerB(board);
 
             Console.WriteLine("Enemy Marker present in destination\nAttempting capture");
@@ -239,9 +239,9 @@ namespace CheckersGame
                     // original poistion of marker has the "X" replaced with "  "
                     board.Tiles[i] = board.Choice + "   ";
                     if (Opponent == "C")
-                        {
-                            Comp.RemoveTakenPiece(board.Destination);
-                        }
+                    {
+                        Comp.RemoveTakenPiece(board.Destination);
+                    }
                     board.PlayerBMarkerCount--;
                     Console.ReadLine();
                     break;
@@ -256,7 +256,7 @@ namespace CheckersGame
         #region CaptureSecondMarker
         public override void captureMarker2(string Opponent)
         {
-            Skynet Comp = board.Computer;
+            Skynet Comp = board.computer;
             PlayerB playerbFunction = new PlayerB(board);
 
             Console.WriteLine("Enemy Marker present in destination\nAttempting capture");
