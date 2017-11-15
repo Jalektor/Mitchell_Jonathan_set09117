@@ -9,7 +9,7 @@ namespace CheckersGame
     class Program
     {
         static void Main(string[] args)
-        {
+       {
             FrontPage start = new FrontPage();
 
             start.Menu();

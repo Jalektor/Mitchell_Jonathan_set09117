@@ -23,31 +23,18 @@ namespace CheckersGame
 
         public string[] Tiles { get { return tiles; } set { tiles = value; } }
 
-
-        // Keeps do while loop going ATM. Will change later
-        protected int count = 2;
-
         // variables for player interation
         // input is based on readline()
         // choice is the chosen markers current location
         // destination is where it is to go
         // after input has been sent to changed to upperCase
         private string input;
-        private string choice;
-        private string destination;
+        //private string choice;
+        //private string destination;
 
         public string Input { get { return input; } set { input = value; } }
-        public string Choice { get { return choice; } set { choice = value; } }
-        public string Destination { get { return destination; } set { destination = value; } }
-
-
-        // converts above string inputs into char array
-        // for checking where movement position is going to be
-        private char[] startcoord;
-        private char[] endcoord;
-
-        public char[] Startcoord { get { return startcoord; } set { startcoord = value; } }
-        public char[] Endcoord { get { return endcoord; } set { endcoord = value; } }
+        //public string Choice { get { return choice; } set { choice = value; } }
+        //public string Destination { get { return destination; } set { destination = value; } }
 
         // takes count of markers left for each player
         // IF either are zero, ends loop
@@ -67,11 +54,10 @@ namespace CheckersGame
         public string Opponent { get { return opponent; } set { opponent = value; } }
 
         // object of classes to call on the functions within them
-        Movement player1;
-        Movement player2;
-        public Movement playerAKing;
-        public Movement playerBKing;
-        public Skynet computer;
+        public Movement Player1 { get; set; }
+        public Movement Player2 { get; set; }
+        public Skynet Computer { get; set; }
+        public Movement PlayerKing { get; set; }
 
         // variable to control 
         private int gameState = 1;
@@ -81,17 +67,15 @@ namespace CheckersGame
         // At the moment
         public Board()
         {
-            computer = new Skynet(this);
-            player1 = new PlayerA(this);
-            player2 = new PlayerB(this);
-            playerAKing = new PlayerAKing(this);
-            playerBKing = new PlayerBKing(this);
+            Computer = new Skynet(this);
+            Player1 = new PlayerA(this);
+            Player2 = new PlayerB(this);
+            PlayerKing = new PlayerKing(this);
         }
         #endregion
         #region PlayerVPlayer
         public void PvP()
         {
-            Opponent = string.Empty;
             do
             {
                 DisplayData();      
@@ -99,10 +83,12 @@ namespace CheckersGame
 
                 if (Player == 1)
                 {
+                    Opponent = "O";
                     PlayerAStart();
                 }
                 else
                 {
+                    Opponent = "X";
                     PlayerBStart();
                 }
 
@@ -133,18 +119,19 @@ namespace CheckersGame
         #region PlayerVComputer
         public void PvC()
         {
-            Opponent = "C";
-            computer.StorePieces();
+            Computer.StorePieces();
             do
             {
-                DisplayData();
+                DisplayData();                
                 createBoard();
                 if(Player == 1)
                 {
+                    Opponent = "C";
                     PlayerAStart();
                 }
                 else
                 {
+                    Opponent = "X-C";
                     ComputerPlays();
                 }
 
@@ -179,7 +166,7 @@ namespace CheckersGame
             Console.WriteLine("Welcome to Draughts!\n");
 
             Console.WriteLine("Select Marker by Row then column");
-
+            Console.WriteLine(player);
             Console.WriteLine("Player 1 marker count: " + PlayerAMarkerCount);
             Console.WriteLine("Player 2 marker count: " + PlayerBMarkerCount + "\n\n");
         }
@@ -223,83 +210,75 @@ namespace CheckersGame
             }
         }
         #endregion
-        #region PlayerAStartMove
+        #region PlayerAStart
         public void PlayerAStart()
-        {
+        { 
             // takes user input and sets it to upperCase
             // in case user wrote in lower case
             Console.WriteLine("Player 1 select a piece to move\n");
             input = Console.ReadLine();
-            choice = input.ToUpper();
+            Player1.PieceStart = input.ToUpper();
 
             // checks if choice is empty
-            if (choice == "")
+            if (Player1.PieceStart == "")
             {
                 Console.WriteLine("Please enter a piece position to move");
                 Console.ReadLine();
                 PvP();
             }
 
-            startcoord = choice.ToCharArray();
-
             Console.WriteLine("Where do you want the piece to go?");
             Input = Console.ReadLine();
-            Destination = Input.ToUpper();
+            Player1.Destination = Input.ToUpper();
 
             //Check is destination is Empty
-            if (Destination == "")
+            if (Player1.Destination == "")
             {
                 Console.WriteLine("Please enter a position for your piece to move too");
                 Console.ReadLine();
                 PvP();
             }
 
-            Endcoord = Destination.ToCharArray();
-
-            player1.move(Opponent);       
-            #endregion
+            Player1.Move(Opponent);       
+            
             
         }
-        #region PlayerBSTartMove();
+        #endregion
+        #region PlayerBStart
         public void PlayerBStart()
         {
             // takes user input and sets it to upperCase
             // in case user wrote in lower case
             Console.WriteLine("Player 2 select a piece to move\n");
             input = Console.ReadLine();
-            choice = input.ToUpper();
+            Player2.PieceStart = input.ToUpper();
 
             // checks if choice is empty
-            if (choice == "")
+            if (Player2.PieceStart == "")
             {
                 Console.WriteLine("Please enter a piece position to move");
                 Console.ReadLine();
                 PvP();
             }
 
-            startcoord = choice.ToCharArray();
-
             Console.WriteLine("Where do you want the piece to go?");
             Input = Console.ReadLine();
-            Destination = Input.ToUpper();
+            Player2.Destination = Input.ToUpper();
 
             //Check is destination is Empty
-            if (Destination == "")
+            if (Player2.Destination == "")
             {
                 Console.WriteLine("Please enter a position for your piece to move to");
                 Console.ReadLine();
                 PvP();
             }
-
-            Endcoord = Destination.ToCharArray();
-
-            player2.move(null);
+            Player2.Move(Opponent);
         }
         #endregion
         #region ComputerAStart
         public void ComputerPlays()
         {
-            computer.MovePiece();
+            Computer.Move(Opponent);
         }
         #endregion
     }

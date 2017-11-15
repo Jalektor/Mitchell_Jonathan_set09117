@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Media;
+using System.Diagnostics;
+using System.Reflection;
+using System.IO;
+using System.Resources;
 
 namespace CheckersGame
 {
@@ -57,5 +62,6 @@ namespace CheckersGame
             Console.WriteLine("Cannot take enemy piece. No tiles to move too after.\nOr there is an enemy marker at location\nMove aborted");
             Console.ReadLine();
         }
+
     }
 }

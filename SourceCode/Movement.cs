@@ -13,10 +13,14 @@ namespace CheckersGame
 
         // newDest to store new destination, based on where marker is moving too &/or an enemy marker is being captured
         // Left & right used for second enemy marker take - to get location of new coord for player piece
+        private string pieceStart;
+        private string destination;
         private string newDest;
         private string left;
         private string right;
 
+        public string Destination { get { return destination; } set { destination = value; } }
+        public string PieceStart { get { return pieceStart; } set { pieceStart = value; } }
         public string NewDest { get { return newDest; } set { newDest = value; } }
         public string Left { get { return left; } set { left = value; } }
         public string Right { get { return right; } set { right = value; } }
@@ -45,15 +49,6 @@ namespace CheckersGame
         public int PosC { get { return posC; } set { posC = value; } }
         public int PosD { get { return posD; } set { posD = value; } }
 
-        // variables for use in various for loops
-        // also used to move markers around bored in various functions
-        // NOTE. It works. kinda gonna stick to it
-        public int x;
-        public int i;
-        public int d;
-        public int y;
-        public int z;
-
         // String contents debug stuff
         // NOTE newL & newN must have a strign in them else are regarded as null, for some reason that escapes me :D
         public string newL = "coord";
@@ -62,6 +57,8 @@ namespace CheckersGame
         public char coordn;
 
         public string[] TilesUndo { get; set; }
+        public string Ans { get; set; }
+        public bool Captured { get; set; }
         #endregion
         #region Constructor
         // needed?
@@ -70,7 +67,9 @@ namespace CheckersGame
             board = draughts;
         }
         #endregion
-        public abstract void move(string Opponent);
+        public abstract void Move(string Opponent);
+        public abstract string getPositionFWDLeft();
+        public abstract string getPositionFWDRight();
 
     }
 }

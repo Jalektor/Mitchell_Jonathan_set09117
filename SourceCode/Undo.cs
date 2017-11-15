@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CheckersGame
 {
-    public class UndoRedo
+    public class Undo
     {
         public Stack<string[]> undo = new Stack<string[]>();
     }
